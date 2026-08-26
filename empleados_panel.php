@@ -5,7 +5,8 @@
     $registros = mysqli_query($conex, "SELECT empleados.*, roles.nombre_rol
     FROM empleados
     INNER JOIN roles ON roles.id_rol = empleados.id_rol 
-    WHERE baja = '1'")
+    WHERE baja = '1'
+    ORDER BY empleados.id_empleado ASC")
         or die("Problema en la consulta: " . mysqli_error($conex));
     mysqli_close($conex);
 

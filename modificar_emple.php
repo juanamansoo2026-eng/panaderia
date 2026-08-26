@@ -2,19 +2,30 @@
 require_once("conexion.php");
 
 if (isset($_REQUEST['Guardar'])){
-    $id_empleado = $_REQUEST['id_empleado'];
-    $email = $_REQUEST['email'];
+    $id_empleado = filter_input(INPUT_POST, 'id_empleado', FILTER_VALIDATE_INT);
+    $id_rol = filter_input(INPUT_POST, 'id_rol', FILTER_VALIDATE_INT);
+    $nombre = trim($_POST['nombre'] ?? '');
+    $apellido = trim($_POST['apellido'] ?? '');
+    $dni = trim($_POST['dni'] ?? '');
+    $telefono = trim($_POST['telefono'] ?? '');
+    $email = trim($_POST['email'] ?? '');
     $fecha_modi = date('Y-m-d');
 
-    $resultado_modi = mysqli_query($conex,"UPDATE empleados SET email = '$email', fecha_modi = '$fecha_modi'
-    WHERE id_empleado = $id_empleado") 
-    or die ("problema en la consulta".mysqli_error($conex));
+    if (!$id_empleado || !$id_rol || $nombre === '' || $apellido === '' || $dni === '' || $telefono === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die('Los datos del empleado no son válidos.');
+    }
+
+    $consulta = mysqli_prepare($conex, "UPDATE empleados
+        SET nombre = ?, apellido = ?, dni = ?, telefono = ?, id_rol = ?, email = ?, fecha_modi = ?
+        WHERE id_empleado = ?");
+    mysqli_stmt_bind_param($consulta, 'ssssissi', $nombre, $apellido, $dni, $telefono, $id_rol, $email, $fecha_modi, $id_empleado);
+    $resultado_modi = mysqli_stmt_execute($consulta);
+
     if ($resultado_modi){
-        echo '<h3>Se guardaron correctamente los datos</h3>';
-        header('Refresh: 1; url=empleados_panel.php');
+        header('Location: empleados_panel.php');
         exit();  
         } else {
-        echo 'Se produjo un error al modificar';
+        echo 'Se produjo un error al modificar: ' . mysqli_error($conex);
     }      
     mysqli_close($conex);
 }
