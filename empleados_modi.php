@@ -1,20 +1,43 @@
+
 <?php
-// Asegúrate de que la variable 'id_empleado' esté definida en la solicitud
-if (isset($_REQUEST['id_empleado'])) {
-    $id_empleado = $_REQUEST['id_empleado'];
-    require_once("conexion.php");
 
-    // Realizar la consulta para obtener los datos del empleado
-    $registro = mysqli_query($conex, "SELECT * FROM empleados WHERE id_empleado = $id_empleado")
-        or die("Problema en la consulta: " . mysqli_error($conex));
+require_once("./conexion.php");
 
-    // Verificar si se encontró el registro
-    if ($registro) {
-        $row_registro = mysqli_fetch_assoc($registro); // Obtener los datos del empleado
-    } else {
-        echo 'Error en la conexión o no se encontró el registro';
+$row_registro = null;
+if (isset($_POST['id_empleado']) && ctype_digit((string) $_POST['id_empleado'])) {
+    $id_empleado = (int) $_POST['id_empleado'];
+    $registro = mysqli_query($conex, "SELECT * FROM empleados WHERE id_empleado = $id_empleado");
+
+    if (!$registro || !($row_registro = mysqli_fetch_assoc($registro))) {
+        die("No se encontró el empleado solicitado.");
     }
 }
+
+if (isset($_POST['Guardar'])) {
+
+    $id_empleado = $_POST['id_empleado'];
+    $id_rol = $_POST['id_rol'];
+    $email = $_POST['email'];
+
+    $fecha_modi = date('Y-m-d');
+
+    $consulta = mysqli_query($conex, "
+        UPDATE empleados
+        SET 
+            id_rol = '$id_rol',
+            email = '$email',
+            fecha_modi = '$fecha_modi'
+        WHERE id_empleado = '$id_empleado'
+    ");
+
+    if ($consulta) {
+        header("Location: ../empleados/empleados_panel.php");
+        exit;
+    } else {
+        echo "Error al modificar: " . mysqli_error($conex);
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -36,29 +59,44 @@ if (isset($_REQUEST['id_empleado'])) {
             <input style="background: #e0e0e0;" type="text" name="id_empleado" value="<?php echo $row_registro['id_empleado']; ?>" readonly>
             <br>
 
-            <!-- Nombre (solo lectura) -->
+            <!-- Nombre -->
             <label>Nombre:</label>
-            <input style="background: #e0e0e0;" type="text" name="nombre" value="<?php echo $row_registro['nombre']; ?>" readonly>
+            <input type="text" name="nombre" value="<?php echo htmlspecialchars($row_registro['nombre']); ?>" required>
             <br>
 
-            <!-- Apellido (solo lectura) -->
+            <!-- Apellido -->
             <label>Apellido:</label>
-            <input style="background: #e0e0e0;" type="text" name="apellido" value="<?php echo $row_registro['apellido']; ?>" readonly>
+            <input type="text" name="apellido" value="<?php echo htmlspecialchars($row_registro['apellido']); ?>" required>
             <br>
 
-            <!-- DNI (solo lectura) -->
+            <!-- DNI -->
             <label>DNI:</label>
-            <input style="background: #e0e0e0;" type="text" name="dni" value="<?php echo $row_registro['dni']; ?>" readonly>
+            <input type="text" name="dni" value="<?php echo htmlspecialchars($row_registro['dni']); ?>" required>
             <br>
 
             <!-- Rol (solo lectura) -->
-            <label>Rol:</label>
-            <input style="background: #e0e0e0;" type="text" name="rol" value="<?php echo $row_registro['rol']; ?>" readonly>
-            <br>
+            <!-- Rol -->
+        <label>Rol:</label>
 
-            <!-- Telefono (solo lectura) -->
+        <select name="id_rol" id="id_rol" required>
+            <?php
+            $consulta_roles = mysqli_query($conex, "SELECT * FROM roles");
+
+            while ($rol = mysqli_fetch_assoc($consulta_roles)) {
+                $seleccionado = ($rol['id_rol'] == $row_registro['id_rol']) ? 'selected' : '';
+
+                echo "<option value='" . $rol['id_rol'] . "' $seleccionado>";
+                echo $rol['nombre_rol'];
+                echo "</option>";
+            }
+            ?>
+        </select>
+
+        <br>
+
+            <!-- Telefono -->
             <label>Telefono:</label>
-            <input style="background: #e0e0e0;" type="text" name="telefono" value="<?php echo $row_registro['telefono']; ?>" readonly>
+            <input type="text" name="telefono" value="<?php echo htmlspecialchars($row_registro['telefono']); ?>" required>
             <br>
 
             <!-- Usuario (solo lectura) -->
@@ -73,7 +111,7 @@ if (isset($_REQUEST['id_empleado'])) {
 
             <!-- Email (editable) -->
             <label>Email:</label>
-            <input type="email" name="email" value="<?php echo $row_registro['email']; ?>" required>
+            <input type="email" name="email" value="<?php echo htmlspecialchars($row_registro['email']); ?>" required>
             <br>
 
             <!-- Fecha Alta (solo lectura) -->
