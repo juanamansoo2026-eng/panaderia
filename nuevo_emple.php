@@ -1,10 +1,10 @@
 <?php
-include 'conexion.php'; // Incluir la conexión
+include 'conexion.php';
 
-$registroExitoso = false; // Variable para controlar si el registro fue exitoso
+$registroExitoso = false;
+$mensajeError = "";
 
-// Obtener la fecha actual en formato YYYY-MM-DD
-$fecha_actual = date('Y-m-d'); 
+$fecha_actual = date('Y-m-d');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = $_POST['nombre'];
@@ -15,33 +15,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $email = $_POST['email'];
+
     $fecha_alta = $fecha_actual;
     $fecha_modi = NULL;
     $fecha_baja = NULL;
     $baja = 0;
 
-    $registroExitoso = registrarUsuario($nombre, $apellido, $dni, $rol, $telefono, $username, $password, $email, $fecha_alta, $fecha_modi, $fecha_baja, $baja);
+    $resultado = registrarUsuario(
+        $nombre,
+        $apellido,
+        $dni,
+        $rol,
+        $telefono,
+        $username,
+        $password,
+        $email,
+        $fecha_alta,
+        $fecha_modi,
+        $fecha_baja,
+        $baja
+    );
+
+    if ($resultado === true) {
+        $registroExitoso = true;
+    } else {
+        $mensajeError = $resultado;
+    }
 }
 
-function registrarUsuario($nombre, $apellido, $dni, $rol, $telefono, $username, $password, $email, $fecha_alta, $fecha_modi, $fecha_baja, $baja) {
+function registrarUsuario(
+    $nombre,
+    $apellido,
+    $dni,
+    $rol,
+    $telefono,
+    $username,
+    $password,
+    $email,
+    $fecha_alta,
+    $fecha_modi,
+    $fecha_baja,
+    $baja
+) {
     global $conex;
 
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    
-    $stmt = $conex->prepare("INSERT INTO empleados (nombre, apellido, dni, id_rol, telefono, username, password, email, fecha_alta, fecha_modi, fecha_baja, baja) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    if (!$stmt) {
-    die("ERROR AL PREPARAR LA CONSULTA: " . $conex->error);
+    // Verificar si el usuario ya existe
+    $verificar = $conex->prepare(
+        "SELECT username FROM empleados WHERE username = ?"
+    );
+
+    $verificar->bind_param("s", $username);
+    $verificar->execute();
+
+    $resultado = $verificar->get_result();
+
+    if ($resultado->num_rows > 0) {
+        $verificar->close();
+
+        return "El usuario '$username' ya existe. Por favor, elija otro.";
     }
-    $stmt->bind_param("ssssssssssss", $nombre, $apellido, $dni, $rol, $telefono, $username, $hashedPassword, $email, $fecha_alta, $fecha_modi, $fecha_baja, $baja);
+
+    $verificar->close();
+
+    // Encriptar contraseña
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insertar empleado
+    $stmt = $conex->prepare(
+        "INSERT INTO empleados 
+        (nombre, apellido, dni, id_rol, telefono, username, password, email, fecha_alta, fecha_modi, fecha_baja, baja) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    );
+
+    if (!$stmt) {
+        return "Error al preparar el registro: " . $conex->error;
+    }
+
+    $stmt->bind_param(
+        "ssssssssssss",
+        $nombre,
+        $apellido,
+        $dni,
+        $rol,
+        $telefono,
+        $username,
+        $hashedPassword,
+        $email,
+        $fecha_alta,
+        $fecha_modi,
+        $fecha_baja,
+        $baja
+    );
 
     if ($stmt->execute()) {
         $stmt->close();
-        return true; // Registro exitoso
-    } else {
-        $stmt->close();
-        return false; // Error en el registro
+        return true;
     }
+
+    $error = $stmt->error;
+    $stmt->close();
+
+    return "Error al registrar el usuario: " . $error;
 }
 ?>
 
@@ -71,11 +145,30 @@ function registrarUsuario($nombre, $apellido, $dni, $rol, $telefono, $username, 
 <body>
     <div class="container">
         <?php if ($registroExitoso): ?>
+
+            <script>
+                alert("¡Usuario creado exitosamente!");
+            </script>
+
             <p>Registro exitoso. Puedes iniciar sesión.</p>
+
             <form action="index.php" method="get">
-                <button type="submit" class="link-button">Volver al Menú Principal</button>
+                <button type="submit" class="link-button">
+                    Volver al Menú Principal
+                </button>
             </form>
+
         <?php else: ?>
+
+        <?php if (!empty($mensajeError)): ?>
+
+                
+            <div class="notificacion error">
+                <?php echo htmlspecialchars($mensajeError); ?>
+            </div>
+            
+
+        <?php endif; ?>
             <h2>Registrarse - Panadería M</h2>
             <form action="nuevo_emple.php" method="post">
                 <label for="nombre">Nombre:</label>
