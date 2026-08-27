@@ -2,6 +2,7 @@
 
 $mensaje = "";
 $mostrarNueva = false;
+$tipoMensaje = "";
 $username = "";
 
 $servidor = "localhost";
@@ -41,12 +42,15 @@ if (isset($_POST['buscar_usuario'])) {
 
         if ($result->num_rows > 0) {
 
-            // El usuario existe
+            
+            $mensaje = "Usuario encontrado: " . $username;
+            $tipoMensaje = "exito";
             $mostrarNueva = true;
 
         } else {
 
             $mensaje = "El nombre de usuario no existe.";
+            $tipoMensaje = "error";
 
         }
 
@@ -67,6 +71,7 @@ if (isset($_POST['submit_new_password'])) {
     if ($new_password == '') {
 
         $mensaje = "La nueva contraseña no puede estar vacía.";
+        $tipoMensaje = "advertencia";
         $mostrarNueva = true;
 
     } else {
@@ -93,12 +98,13 @@ if (isset($_POST['submit_new_password'])) {
         if ($updateStmt->affected_rows > 0) {
 
             $mensaje = "Contraseña actualizada correctamente.";
-
+            $tipoMensaje = "exito";
             $mostrarNueva = false;
 
         } else {
 
             $mensaje = "No se pudo actualizar la contraseña.";
+            $tipoMensaje = "error";
 
         }
 
@@ -134,7 +140,7 @@ if (isset($_POST['submit_new_password'])) {
 
     <?php if ($mensaje != ""): ?>
 
-        <p class="error">
+        <p class="mensaje <?php echo $tipoMensaje; ?>">
             <?php echo htmlspecialchars($mensaje); ?>
         </p>
 

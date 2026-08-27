@@ -104,17 +104,7 @@ h3{
     background-color: #b8865b;
 }
 
-/* Mensaje de error */
-.container p {
-    background-color: #f4d6c6;
-    color: #8b3e2f;
 
-    border: 1px solid #d99a7c;
-    padding: 12px;
-    border-radius: 8px;
-
-    text-align: center;
-}
 
 /* Celulares */
 @media (max-width: 600px) {
@@ -126,4 +116,33 @@ h3{
     .container h2 {
         font-size: 23px;
     }
+}
+
+
+.mensaje {
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: normal;
+}
+
+
+.mensaje.exito {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #a3d9a5;
+}
+
+
+.mensaje.error {
+    background-color: #f8d7da;
+    color: #842029;
+    border: 1px solid #f1aeb5;
+}
+
+.mensaje.advertencia {
+    background-color: #fff3cd;
+    color: #664d03;
+    border: 1px solid #ffda6a;
 }
