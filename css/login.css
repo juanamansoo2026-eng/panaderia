@@ -9,6 +9,10 @@ body {
     justify-content: center;
     align-items: center;
 }
+h3{
+    text-align: center;
+    color: #382214;
+}
 
 /* Caja principal */
 .container {
@@ -60,7 +64,14 @@ body {
 .container form > div {
     margin-bottom: 20px;
 }
-
+.mostrar{
+    display: flex;
+    justify-content: center;
+}
+.recuperar{
+    display: flex;
+    justify-content: center;
+}
 /* Botones */
 .container button {
     width: 100%;

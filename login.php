@@ -112,7 +112,7 @@ function loginUsuario($username, $password) {
                         onclick="togglePass()"
                     >
 
-                    <label for="mostrarPass">
+                    <label for="mostrarPass" style="padding-top: 7px;">
                         Ver contraseña
                     </label>
 
