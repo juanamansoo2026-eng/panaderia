@@ -4,6 +4,7 @@ session_start();
 include 'conexion.php';
 
 $loginExitoso = false;
+$error = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -11,10 +12,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
 
     if ($username !== '' && $password !== '') {
-        $loginExitoso = loginUsuario($username, $password);
+
+        $resultado = loginUsuario($username, $password);
+
+        if ($resultado !== true) {
+            $error = $resultado;
+        }
     }
 }
-
 function loginUsuario($username, $password) {
     global $conex;
 
@@ -35,25 +40,20 @@ function loginUsuario($username, $password) {
 
             $_SESSION['username'] = $username;
 
-            // Ir a la página principal
             header("Location: page1.php");
             exit();
 
         } else {
 
-            echo "<p class='error'>Contraseña incorrecta</p>";
-
+            $stmt->close();
+            return "Contraseña incorrecta";
         }
 
     } else {
 
-        echo "<p class='error'>Usuario no encontrado</p>";
-
+        $stmt->close();
+        return "Usuario no encontrado";
     }
-
-    $stmt->close();
-
-    return false;
 }
 ?>
 
@@ -77,6 +77,13 @@ function loginUsuario($username, $password) {
     <div class="container">
 
         <h2>Panadería M - Iniciar Sesión</h2>
+        <?php if ($error != ""): ?>
+
+            <p class="mensaje error">
+                <?php echo htmlspecialchars($error); ?>
+            </p>
+
+        <?php endif; ?>
 
         <form action="login.php" method="post">
 

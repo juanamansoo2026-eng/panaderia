@@ -1,21 +1,11 @@
 <?php
 
+include 'conexion.php';
+
 $mensaje = "";
-$mostrarNueva = false;
 $tipoMensaje = "";
+$mostrarNueva = false;
 $username = "";
-
-$servidor = "localhost";
-$usuario = "root";
-$pass = "";
-$basedatos = "original";
-
-$conn = mysqli_connect($servidor, $usuario, $pass, $basedatos);
-
-if (!$conn) {
-    die("Error en la conexión: " . mysqli_connect_error());
-}
-
 
 /* --------------------------------
    BUSCAR USUARIO
@@ -34,7 +24,7 @@ if (isset($_POST['buscar_usuario'])) {
         $query = "SELECT username FROM empleados 
                   WHERE username = ? AND baja = 1";
 
-        $stmt = $conn->prepare($query);
+        $stmt = $conex->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
 
@@ -85,7 +75,7 @@ if (isset($_POST['submit_new_password'])) {
                         SET password = ? 
                         WHERE username = ?";
 
-        $updateStmt = $conn->prepare($updateQuery);
+        $updateStmt = $conex->prepare($updateQuery);
 
         $updateStmt->bind_param(
             "ss",
@@ -199,12 +189,7 @@ if (isset($_POST['submit_new_password'])) {
 
         <form action="recuperar_contra.php" method="post">
 
-            <p>
-                Usuario encontrado:
-                <strong>
-                    <?php echo htmlspecialchars($username); ?>
-                </strong>
-            </p>
+
 
 
             <div>
@@ -261,6 +246,3 @@ if (isset($_POST['submit_new_password'])) {
 
 </html>
 
-<?php
-mysqli_close($conn);
-?>
