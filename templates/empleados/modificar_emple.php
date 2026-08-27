@@ -1,5 +1,5 @@
 <?php
-require_once("conexion.php");
+require_once("../../conexion.php");
 
 if (isset($_REQUEST['Guardar'])){
     $id_empleado = filter_input(INPUT_POST, 'id_empleado', FILTER_VALIDATE_INT);

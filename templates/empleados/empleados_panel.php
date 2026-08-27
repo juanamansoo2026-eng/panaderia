@@ -1,11 +1,12 @@
 <?php 
     $fecha_actual = date('Y-m-d');
 
-    require_once("conexion.php");
+    require_once("../../conexion.php");
     $registros = mysqli_query($conex, "SELECT empleados.*, roles.nombre_rol
     FROM empleados
     INNER JOIN roles ON roles.id_rol = empleados.id_rol 
-    WHERE baja = '0'")
+    WHERE baja = '1'
+    ORDER BY empleados.id_empleado ASC")
         or die("Problema en la consulta: " . mysqli_error($conex));
     mysqli_close($conex);
 
@@ -17,7 +18,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel de Empleados Inactivos</title>
+    <title>Panel de Empleados</title>
     <style>
         .tachado {
             text-decoration: line-through;
@@ -82,28 +83,25 @@
     </script>
 </head>
 <body>
-    <h2>Lista de Empleados Inactivos- Panadería M</h2>
+    <h2>Lista de Empleados - Panadería M</h2>
     <div>
-        <a class="button" href="nuevo_emple.php">Nuevo Registro</a>
-        <a class="button" href="turno_caja_panel.php">Panel Turnos</a>
-        <a class="button" href="empleados_panel.php">Panel de Empleados</a>
+        <a class="button" href="templates/empleados/nuevo_emple.php">Nuevo Registro</a>        
+        <a class="button" href="templates/empleados/empleados_panel_baja.php">Empleados Inactivos</a>
+        <a class="button" href="templates/empleados/turno_caja_panel.php">Panel Turnos</a>
+        <a class="button" href="../../page1.php">Volver al Menu</a>
     </div>
     <!-- Contenedor para la tabla con desplazamiento horizontal -->
     <div class="table-container">
         <table>
             <tr style="background:#c561ff;">
                 <th>Id</th>
-                <th>Nombre</th>
-                <th>Apellido</th>
-                <th>DNI</th>
-                <th>Rol</th>
-                <th>Telefono</th>
                 <th>Usuario</th>
-                <th>Contraseña</th>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Apellido</th>                
+                <th>Telefono</th>
                 <th>Email</th>
-                <th>Fecha Alta</th>
-                <th>Fecha Modi</th>
-                <th>Fecha Baja</th>
+                <th>Rol</th>
                 <th>Baja</th>
                 <th>Acciones</th>
             </tr>
@@ -114,30 +112,31 @@
             ?>
                 <tr id="fila_<?php echo $row_registros['id_empleado']; ?>" class="<?php echo $clase_tachado; ?>">
                     <td align="center"> <?php echo $row_registros['id_empleado']; ?></td>
+                                                <td> <?php echo $row_registros['username']; ?></td>
+                    <td> <?php echo $row_registros['dni']; ?></td>
+
                     <td> <?php echo $row_registros['nombre']; ?></td>
                     <td> <?php echo $row_registros['apellido']; ?></td>
-                    <td> <?php echo $row_registros['dni']; ?></td>
-                    <td> <?php echo $row_registros['nombre_rol']; ?></td>    
-                    <td> <?php echo $row_registros['telefono']; ?></td>
-                    <td> <?php echo $row_registros['username']; ?></td>
-                    <td> <?php echo $row_registros['password']; ?></td>
+                                        <td> <?php echo $row_registros['telefono']; ?></td>
+
                     <td> <?php echo $row_registros['email']; ?></td>
-                    <td> <?php echo $row_registros['fecha_alta']; ?></td>
-                    <td> <?php echo $row_registros['fecha_modi']; ?></td>
-                    <td id="fecha_baja_<?php echo $row_registros['id_empleado']; ?>"> 
-                        <?php echo $row_registros['fecha_baja']; ?>
-                    </td>
+                                        <td> <?php echo $row_registros['nombre_rol']; ?></td>    
+
                     <td> 
                         <select onchange="actualizarBaja(<?php echo $row_registros['id_empleado']; ?>, this.value)">
                             <option value="1" <?php echo ($row_registros['baja'] == 1) ? 'selected' : ''; ?>>Activo</option>
                             <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>No Activo</option>
                         </select>
-                    </td>   
+                    </td>
+                       
                     <td align="center">
                         <form action="empleados_modi.php" method="post">
                             <input type="hidden" name="id_empleado" value="<?php echo $row_registros['id_empleado']; ?>">
-                            <input type="image" name="editar" src="img/lapiz2.png" width="20" title="Editar">
-                        </form> 
+
+                            <button type="submit" style="border: none; background: none; color: #b47c04; cursor: pointer; padding: 0;">
+                                <svg width="25px" height="25px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#b47c04" stroke="#b47c04"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title></title> <g id="Complete"> <g id="edit"> <g> <path d="M20,16v4a2,2,0,0,1-2,2H4a2,2,0,0,1-2-2V6A2,2,0,0,1,4,4H8" fill="none" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path> <polygon fill="none" points="12.5 15.8 22 6.2 17.8 2 8.3 11.5 8 16 12.5 15.8" stroke="#000000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></polygon> </g> </g> </g> </g></svg>
+                            </button>
+                        </form>
                     </td>
                  </tr>
             <?php  

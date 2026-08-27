@@ -47,9 +47,7 @@ function loginUsuario($username, $password) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+    <link rel="stylesheet" href="css/login.css">
     <title>Panaderia M - Iniciar Sesión</title>
 </head>
 <body>
@@ -67,6 +65,8 @@ function loginUsuario($username, $password) {
             <div>
                 <label for="password">Contraseña</label>
                 <input type="password" name="password" required>
+                <input type="checkbox" onclick="togglePass()"> Ver contraseña
+
             </div>
             <div>
                 <button type="submit" class="boton">Ingresar</button>

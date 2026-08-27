@@ -1,7 +1,7 @@
 
 <?php
 
-require_once("./conexion.php");
+require_once("../../conexion.php");
 
 $row_registro = null;
 if (isset($_POST['id_empleado']) && ctype_digit((string) $_POST['id_empleado'])) {

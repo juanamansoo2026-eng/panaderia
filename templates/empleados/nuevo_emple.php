@@ -1,5 +1,5 @@
 <?php
-include 'conexion.php';
+include '../../conexion.php';
 
 $registroExitoso = false;
 $mensajeError = "";
@@ -128,19 +128,6 @@ function registrarUsuario(
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
-    <script>
-        // Esta función se ejecuta cada vez que el usuario escribe en "nombre" o "apellido"
-        function generarUsuario() {
-            var nombre = document.getElementById("nombre").value; // Obtiene el valor de "nombre"
-            var apellido = document.getElementById("apellido").value; // Obtiene el valor de "apellido"
-            
-            // Si ambos campos tienen algo escrito, generamos el nombre de usuario
-            if (nombre && apellido) {
-                var usuario = apellido.toLowerCase() + nombre.charAt(0).toLowerCase(); // Combina nombre y la primera letra del apellido
-                document.getElementById("username").value = usuario; // Coloca el resultado en el campo "usuario"
-            }
-        }
-    </script>
 </head>
 <body>
     <div class="container">
@@ -172,10 +159,10 @@ function registrarUsuario(
             <h2>Registrarse - Panadería M</h2>
             <form action="nuevo_emple.php" method="post">
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" name="nombre" required oninput="generarUsuario()"> <!-- Ejecuta la función al escribir -->
+                <input type="text" id="nombre" name="nombre" required> <!-- Ejecuta la función al escribir -->
                 
                 <label for="apellido">Apellido:</label>
-                <input type="text" id="apellido" name="apellido" required oninput="generarUsuario()"> <!-- Ejecuta la función al escribir -->
+                <input type="text" id="apellido" name="apellido" required > <!-- Ejecuta la función al escribir -->
                 
                 <label for="dni">DNI:</label>
                 <input type="text" name="dni" maxlength="15" required>

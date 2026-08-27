@@ -1,6 +1,6 @@
 <?php
 // Conexión a la base de datos
-require_once("conexion.php");
+require_once("../../conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recibimos los datos enviados por AJAX
@@ -16,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conex->prepare($query);
         $stmt->bind_param("isi", $baja, $fecha_actual, $id_empleado);  // Asignamos la fecha actual
     } else {
-        // Si "baja" es 1 (Activo), ponemos la fecha de baja como NULL
         $query = "UPDATE empleados SET baja = ?, fecha_baja = NULL WHERE id_empleado = ?";
         $stmt = $conex->prepare($query);
         $stmt->bind_param("ii", $baja, $id_empleado);

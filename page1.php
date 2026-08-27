@@ -24,11 +24,11 @@ if (!isset($_SESSION['username'])) {
                 
                     endif?>
                 <h2>Bienvenido, <?php echo htmlspecialchars($_SESSION['username']); ?>.</h2>
-                <a class="button" href="empleados_panel.php">Ver Panel de Empleados</a>
-                <a class="button" href="clientes_panel.php">Ver Panel de Clientes</a>
-                <a class="button" href="proveedores_panel.php">Ver Panel de Proveedores</a>
-                <a class="button" href="productos_panel.php">Ver Panel de Productos</a>
-                <a class="button" href="gastos_administrativos_panel.php">Ver Panel de Gastos Administrativos</a>
+                <a class="button" href="templates/empleados/empleados_panel.php">Ver Panel de Empleados</a>
+                <a class="button" href="templates/clientes/clientes_panel.php">Ver Panel de Clientes</a>
+                <a class="button" href="templates/proveedores/proveedores_panel.php">Ver Panel de Proveedores</a>
+                <a class="button" href="templates/productos/productos_panel.php">Ver Panel de Productos</a>
+                <a class="button" href="templates/gastos_administrativos/gastos_administrativos_panel.php">Ver Panel de Gastos Administrativos</a>
                 <a class="button button-outline" href="cerrar.php">Cerrar Sesión</a>
         </div>
     </div>
