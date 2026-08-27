@@ -1,81 +1,167 @@
-<?php
-session_start(); // Iniciar la sesión
-include 'conexion.php'; // Incluir la conexión
 
-$loginExitoso = false; // Variable para controlar si el inicio de sesión fue exitoso
+<?php
+session_start();
+include 'conexion.php';
+
+$loginExitoso = false;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
 
-    $loginExitoso = loginUsuario($username, $password);
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
+
+    if ($username !== '' && $password !== '') {
+        $loginExitoso = loginUsuario($username, $password);
+    }
 }
 
 function loginUsuario($username, $password) {
     global $conex;
 
-    $stmt = $conex->prepare("SELECT password FROM empleados WHERE username = ? AND baja = 1");
+    $stmt = $conex->prepare(
+        "SELECT password FROM empleados WHERE username = ? AND baja = 1"
+    );
+
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
+
         $stmt->bind_result($hashedPassword);
         $stmt->fetch();
 
         if (password_verify($password, $hashedPassword)) {
-            $_SESSION['username'] = $username; // Guardar el nombre de usuario en la sesión
 
-            // Redirigir a page1.php después de un inicio de sesión exitoso
+            $_SESSION['username'] = $username;
+
+            // Ir a la página principal
             header("Location: page1.php");
-            return true;
-            exit(); // Asegurarse de que no se ejecute el código siguiente
+            exit();
+
         } else {
-            echo "<p>Contraseña incorrecta</p>";
+
+            echo "<p class='error'>Contraseña incorrecta</p>";
+
         }
+
     } else {
-        echo "<p>Usuario no encontrado</p>";
+
+        echo "<p class='error'>Usuario no encontrado</p>";
+
     }
 
     $stmt->close();
-    return false; // Si no existe inicio de conexion fallida
+
+    return false;
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <link rel="stylesheet" href="css/login.css">
-    <title>Panaderia M - Iniciar Sesión</title>
+
+    <title>Panadería M - Iniciar Sesión</title>
+
 </head>
+
 <body>
-    <div class="container" style="width: 500px">
-        <?php if ($loginExitoso): ?>
-            <!-- Este bloque ya no es necesario, ya que se redirige automáticamente -->
-            <!-- Redirigiendo a page1.php, no es necesario mostrar el mensaje de bienvenida aquí. -->
-        <?php else: ?>
-            <h2>Panadería M - Iniciar Sesión</h2>
-            <form action="login.php" method="post">
+
+    <div class="container">
+
+        <h2>Panadería M - Iniciar Sesión</h2>
+
+        <form action="login.php" method="post">
+
             <div>
+
                 <label for="username">Usuario</label>
-                <input type="text" name="username" required>
-            </div>
-            <div>
-                <label for="password">Contraseña</label>
-                <input type="password" name="password" required>
-                <input type="checkbox" onclick="togglePass()"> Ver contraseña
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                >
 
             </div>
+
             <div>
-                <button type="submit" class="boton">Ingresar</button>
+
+                <label for="password">Contraseña</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                >
+
+                <div class="mostrar">
+
+                    <input
+                        type="checkbox"
+                        id="mostrarPass"
+                        onclick="togglePass()"
+                    >
+
+                    <label for="mostrarPass">
+                        Ver contraseña
+                    </label>
+
+                </div>
+
             </div>
-            </form>
-            <form action="index.php" method="get">
-                <button type="submit">Volver al Menú Principal</button>
-            </form>
-        <?php endif; ?>
+
+            <div>
+
+                <button type="submit" class="boton">
+                    Ingresar
+                </button>
+
+            </div>
+
+        </form>
+
+        <!-- Recuperar contraseña -->
+        <div class="recuperar">
+
+            <a href="recuperar_contra.php">
+                ¿Olvidaste tu contraseña?
+            </a>
+
+        </div>
+
     </div>
+
+    <script>
+
+        function togglePass() {
+
+            const password = document.getElementById("password");
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+            } else {
+
+                password.type = "password";
+
+            }
+
+        }
+
+    </script>
+
 </body>
+
 </html>
+

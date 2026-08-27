@@ -1,93 +1,260 @@
+<?php
+
+$mensaje = "";
+$mostrarNueva = false;
+$username = "";
+
+$servidor = "localhost";
+$usuario = "root";
+$pass = "";
+$basedatos = "original";
+
+$conn = mysqli_connect($servidor, $usuario, $pass, $basedatos);
+
+if (!$conn) {
+    die("Error en la conexión: " . mysqli_connect_error());
+}
+
+
+/* --------------------------------
+   BUSCAR USUARIO
+--------------------------------- */
+
+if (isset($_POST['buscar_usuario'])) {
+
+    $username = $_POST['username'] ?? '';
+
+    if ($username == '') {
+
+        $mensaje = "Ingrese un nombre de usuario.";
+
+    } else {
+
+        $query = "SELECT username FROM empleados 
+                  WHERE username = ? AND baja = 1";
+
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+
+            // El usuario existe
+            $mostrarNueva = true;
+
+        } else {
+
+            $mensaje = "El nombre de usuario no existe.";
+
+        }
+
+        $stmt->close();
+    }
+}
+
+
+/* --------------------------------
+   ACTUALIZAR CONTRASEÑA
+--------------------------------- */
+
+if (isset($_POST['submit_new_password'])) {
+
+    $username = $_POST['username'] ?? '';
+    $new_password = $_POST['new_password'] ?? '';
+
+    if ($new_password == '') {
+
+        $mensaje = "La nueva contraseña no puede estar vacía.";
+        $mostrarNueva = true;
+
+    } else {
+
+        $hashedPassword = password_hash(
+            $new_password,
+            PASSWORD_DEFAULT
+        );
+
+        $updateQuery = "UPDATE empleados 
+                        SET password = ? 
+                        WHERE username = ?";
+
+        $updateStmt = $conn->prepare($updateQuery);
+
+        $updateStmt->bind_param(
+            "ss",
+            $hashedPassword,
+            $username
+        );
+
+        $updateStmt->execute();
+
+        if ($updateStmt->affected_rows > 0) {
+
+            $mensaje = "Contraseña actualizada correctamente.";
+
+            $mostrarNueva = false;
+
+        } else {
+
+            $mensaje = "No se pudo actualizar la contraseña.";
+
+        }
+
+        $updateStmt->close();
+    }
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
     <meta charset="UTF-8">
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+
     <title>Panadería M - Recuperación de Contraseña</title>
+
+    <link rel="stylesheet" href="css/login.css">
+
 </head>
+
 <body>
-    <div class="container" style="width: 500px">
-        <br>
-        <h3>Panadería M - Recuperación de Contraseña</h3>
 
-        <?php
-        $servidor = "localhost";  // Servidor de la base de datos
-        $usuario = "root";        // Usuario para la base de datos
-        $pass = "";               // Contraseña (vacía en XAMPP por defecto)
-        $basedatos = "original"; // Nombre de la base de datos
+<div class="container">
 
-        // Establecer la conexión a la base de datos
-        $conn = mysqli_connect($servidor, $usuario, $pass, $basedatos);
+    <h2>Panadería M</h2>
 
-        // Verificar que la conexión haya sido exitosa
-        if (!$conn) {
-            die("Error en la conexión: " . mysqli_connect_error());
-        }
+    <h3>Recuperación de Contraseña</h3>
 
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            //Obtener el nombre de usuario desde el formulario
-            $username = $_POST['username'];
 
-            // 2. Verificar si el usuario existe en la base de datos
-            $query = "SELECT * FROM empleados WHERE username = ? and baja = '1' "; // el baja = 1, es el que toma si el usuario se encontro
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $result = $stmt->get_result();
+    <?php if ($mensaje != ""): ?>
 
-            if ($result->num_rows > 0) {
-                // El usuario existe, mostramos el formulario para cambiar la contraseña
-                echo '
-                <form action="recuperar_contra.php" method="post">
-                    <label for="new_password">Nueva Contraseña</label>
-                    <input type="password" name="new_password" required>
-                    <button type="submit" name="submit_new_password">Actualizar Contraseña</button>
-                    <input type="hidden" name="username" value="' . htmlspecialchars($username) . '">
-                </form>
-                ';
-            } else {
-                // El usuario no existe
-                echo '<h4>El nombre de usuario no existe.</h4>';
-                echo '<a class="button" href="form_recuperar_contra.php">Volver</a>';
-            }
+        <p class="error">
+            <?php echo htmlspecialchars($mensaje); ?>
+        </p>
 
-            // 3. Procesar la nueva contraseña si el formulario para actualizar fue enviado
-            if (isset($_POST['submit_new_password'])) {
-                $new_password = $_POST['new_password'];
+    <?php endif; ?>
 
-                // Validar que la contraseña no esté vacía
-                if (empty($new_password)) {
-                    echo '<p>La nueva contraseña no puede estar vacía.</p>';
-                } else {
-                    // Encriptar la nueva contraseña
-                    $hashedPassword = password_hash($new_password, PASSWORD_DEFAULT);
 
-                    // Actualizar la contraseña en la base de datos
-                    $updateQuery = "UPDATE empleados SET password = ? WHERE username = ?";
-                    $updateStmt = $conn->prepare($updateQuery);
-                    $updateStmt->bind_param("ss", $hashedPassword, $username);
-                    $updateStmt->execute();
+    <?php if (!$mostrarNueva): ?>
 
-                    if ($updateStmt->affected_rows > 0) {
-                        // Si la actualización fue exitosa
-                        echo '<h3>Usuario: ' . '<b>' . htmlspecialchars($username) . '</b>' . '</h3>';
-                        echo '<h3>Contraseña actualizada! <br> Su nueva contraseña es: ' . '<b>' . htmlspecialchars($new_password) . '</b></h3>';
-                        echo '<a class="button" href="index.php">Volver al Menú Principal</a>';
-                    } else {
-                        // Si no se actualizó nada
-                        echo '<p>No se pudo actualizar la contraseña. Por favor, intente nuevamente.</p>';
-                    }
-                }
-            }
-        }
+        <!-- FORMULARIO PARA BUSCAR USUARIO -->
 
-        // Cerrar la conexión
-        mysqli_close($conn);
-        ?>
+        <form action="recuperar_contra.php" method="post">
 
-    </div>
+            <div>
+
+                <label for="username">
+                    Nombre de usuario
+                </label>
+
+                <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    required
+                >
+
+            </div>
+
+
+            <div>
+
+                <button
+                    type="submit"
+                    name="buscar_usuario"
+                    class="boton"
+                >
+                    Buscar usuario
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div class="recuperar">
+
+            <a href="login.php">
+                Volver al inicio de sesión
+            </a>
+
+        </div>
+
+
+    <?php else: ?>
+
+        <!-- FORMULARIO PARA CAMBIAR CONTRASEÑA -->
+
+        <form action="recuperar_contra.php" method="post">
+
+            <p>
+                Usuario encontrado:
+                <strong>
+                    <?php echo htmlspecialchars($username); ?>
+                </strong>
+            </p>
+
+
+            <div>
+
+                <label for="new_password">
+                    Nueva contraseña
+                </label>
+
+                <input
+                    type="password"
+                    id="new_password"
+                    name="new_password"
+                    required
+                >
+
+            </div>
+
+
+            <input
+                type="hidden"
+                name="username"
+                value="<?php echo htmlspecialchars($username); ?>"
+            >
+
+
+            <div>
+
+                <button
+                    type="submit"
+                    name="submit_new_password"
+                    class="boton"
+                >
+                    Actualizar contraseña
+                </button>
+
+            </div>
+
+        </form>
+
+
+        <div class="recuperar">
+
+            <a href="login.php">
+                Volver al inicio de sesión
+            </a>
+
+        </div>
+
+    <?php endif; ?>
+
+</div>
+
 </body>
+
 </html>
+
+<?php
+mysqli_close($conn);
+?>
