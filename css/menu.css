@@ -1,0 +1,238 @@
+/* ============================================================
+   RESETEO GLOBAL & VARIABLES
+============================================================ */
+/* Se asume que variables como --primary están en :root (definido en inicio.css) 
+   Si no, definimos fallbacks o copiamos :root aquí también */
+
+:root {
+    --primary: #4A63E7;
+    --primary-dark: #324CD1;
+    --secondary: #020236;
+    --text-white: #ffffff;
+    --glass-bg: rgba(2, 2, 54, 0.95);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    text-decoration: none;
+}
+
+/* ============================================================
+   NAVBAR MODERN
+============================================================ */
+.nav-class {
+    width: 100%;
+    height: 80px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 40px;
+    position: fixed;
+    /* Fixed navigation */
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* LOGO */
+.logo {
+    height: 50px;
+    transition: transform 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+}
+
+/* MENÚ DESKTOP */
+.menu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    margin: 0 40px;
+}
+
+.menu-desktop .ul-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+    align-items: center;
+}
+
+.link {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 15px;
+    padding: 8px 0;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.link:hover {
+    color: white !important;
+    background: transparent;
+    /* Remove old bg */
+}
+
+/* Underline effect */
+.link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.link:hover::after {
+    width: 100%;
+}
+
+/* BOTONES DERECHA */
+.plataformas-container {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-plataforma {
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    border-radius: 50px;
+    /* Modern pill shape */
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.superior {
+    background: linear-gradient(135deg, #4A63E7, #3148FF);
+}
+
+.superior:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(74, 99, 231, 0.4);
+}
+
+.secundario {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.secundario:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+/* ============================================================
+   ICONOS FLOTANTES (WHATSAPP/REDES)
+============================================================ */
+.btnwapp {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    z-index: 9999;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    transition: transform 0.3s ease;
+}
+
+.btnwapp:hover {
+    transform: scale(1.1) rotate(10deg);
+}
+
+.contenedor-logo {
+    display: none;
+    /* Hide old redundant icons if implied */
+}
+
+/* ============================================================
+   MENÚ MOBILE (HAMBURGUESA)
+============================================================ */
+.menu-mobile {
+    display: none;
+}
+
+.hamb-icon {
+    width: 32px;
+    cursor: pointer;
+    filter: invert(1);
+    /* Make white */
+}
+
+#menu_hamburguesa {
+    display: none !important;
+}
+
+/* PANEL MOBILE */
+.ul-links-mobile {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    /* Push completely off-screen */
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: var(--secondary);
+    padding: 80px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 9998;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+#menu_hamburguesa:checked~.ul-links-mobile {
+    right: 0 !important;
+}
+
+.ul-links-mobile .link {
+    font-size: 18px;
+    color: white !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 15px;
+}
+
+.close-mobile {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+}
+
+/* BACKDROP for mobile menu (optional but nice) */
+#menu_hamburguesa:checked~.menu-backdrop {
+    display: block;
+}
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 900px) {
+    .nav-class {
+        padding: 0 20px;
+    }
+
+    .menu-desktop,
+    .plataformas-container {
+        display: none !important;
+    }
+
+    .menu-mobile {
+        display: block;
+    }
+}

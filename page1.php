@@ -16,6 +16,10 @@ if (!isset($_SESSION['username'])) {
     <title>Inicio</title>
 </head>
 <body>
+
+    <?php include("menu.php"); ?>
+
+
     <div class="container" style="width: 800px; text-align: center;">
         <div>
             <br>
@@ -32,5 +36,6 @@ if (!isset($_SESSION['username'])) {
                 <a class="button button-outline" href="cerrar.php">Cerrar Sesión</a>
         </div>
     </div>
+    <?php include("footer.php"); ?>
 </body>
 </html>

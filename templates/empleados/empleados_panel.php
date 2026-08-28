@@ -18,6 +18,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- <link rel="stylesheet" href="../../css/menu.css"> -->
+    <link rel="stylesheet" href="../../css/footer.css">
     <title>Panel de Empleados</title>
     <style>
         .tachado {
@@ -83,6 +85,7 @@
     </script>
 </head>
 <body>
+    <?php include("../../menu.php"); ?>
     <h2>Lista de Empleados - Panadería M</h2>
     <div>
         <a class="button" href="templates/empleados/nuevo_emple.php">Nuevo Registro</a>        
@@ -143,5 +146,6 @@
             } ?>
         </table>
     </div>
+    <?php include("../../footer.php"); ?>
 </body>
 </html>
