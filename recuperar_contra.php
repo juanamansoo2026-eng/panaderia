@@ -207,6 +207,17 @@ if (isset($_POST['submit_new_password'])) {
 
             </div>
 
+            <div class="mostrar">
+                <input
+                    type="checkbox"
+                    id="mostrarPass"
+                    onclick="togglePass()"
+                >
+                <label for="mostrarPass" style="padding-top: 7px;">
+                        Ver contraseña
+               </label>
+            </div>
+
 
             <input
                 type="hidden"
@@ -245,4 +256,3 @@ if (isset($_POST['submit_new_password'])) {
 </body>
 
 </html>
-

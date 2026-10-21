@@ -171,4 +171,3 @@ function loginUsuario($username, $password) {
 </body>
 
 </html>
-

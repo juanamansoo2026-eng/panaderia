@@ -2,7 +2,7 @@
 
     $fecha_actual = date('Y-m-d');
     require_once("conexion.php");
-    $registros= mysqli_query($conex,"SELECT id_cliente, nombre, apellido, direccion, telefono, descripcion FROM clientes ")
+    $registros= mysqli_query($conex,"SELECT id_producto, nombre, tipo, precio FROM productos ")
     or die ("problema en la consulta".mysqli_error($conex)); 
     mysqli_close($conex);
 
@@ -45,14 +45,15 @@
                 margin: auto;
             }
         </style>        
-        <title>Panel de clientes - Panadería M</title>
+        <title>Panel de Productos - Panadería M</title>
     </head>
     <body>
+        <?php include("menu.php"); ?>
+
         <div style="text-align: center">
-        <h2>Lista de clientes - Panadería M</h2>
+        <h2>Lista de Productos - Panadería M</h2>
         <div>
-            <a class="button" href="clientes_alta.php">Nuevo Cliente</a>
-            <a class="button" href="ventas_panel.php">Panel de Ventas</a>
+            <a class="button" href="productos_alta.php">Nuevo Producto</a>
             <a class="button" href="page1.php">Volver al Menu</a>
         </div>
         </div>
@@ -62,31 +63,27 @@
             <tr style="background: #c561ff;">
                 <th>ID</th>
                 <th>Nombre</th>
-                <th>Apellido</th>
-                <th>Dirección</th>
-                <th>Telefono</th>
-                <th>Descripcion</th>
+                <th>Tipo</th>
+                <th>Precio</th>
                 <th colspan=2>Acciones</th>
             </tr>
             <?php
             while($row_registros= mysqli_fetch_assoc($registros)) { ?>
                 <tr>   
-                    <td><?php echo $row_registros['id_cliente'];?></td> 
+                    <td><?php echo $row_registros['id_producto'];?></td> 
                     <td><?php echo $row_registros['nombre'];?></td>
-                    <td><?php echo $row_registros['apellido'];?></td>
-                    <td><?php echo $row_registros['direccion'];?></td>
-                    <td><?php echo $row_registros['telefono'];?></td>
-                    <td> <?php echo $row_registros['descripcion'];?></td> 
+                    <td><?php echo $row_registros['tipo'];?></td>
+                    <td> <?php echo $row_registros['precio'];?></td> 
                     <td align="center">
-                        <form action="clientes_modi.php" method="post">
-                            <input type="hidden" name="id_cliente" value="<?php echo $row_registros['id_cliente'];?>"> <!-- para enviar datos, hiden es ocultar-->
+                        <form action="productos_modi.php" method="post">
+                            <input type="hidden" name="id_producto" value="<?php echo $row_registros['id_producto'];?>"> <!-- para enviar datos, hiden es ocultar-->
                             <input type="image" name="editar" src="img/lapiz2.png" width="20" title="Editar">
                         </form>
                     </td>
                     <td align="center">
-                        <form action="clientes_baja.php" method="post">
-                        <input type="hidden" name="id_cliente" value="<?php echo $row_registros['id_cliente'];?>"> <!-- para enviar datos, hiden es ocultar-->
-                        <input type="hidden" name="nomyape_cli" value="<?php echo $row_registros['nombre'] . " " . $row_registros['apellido']?>">
+                        <form action="productos_baja.php" method="post">
+                        <input type="hidden" name="id_producto" value="<?php echo $row_registros['id_producto'];?>"> <!-- para enviar datos, hiden es ocultar-->
+                        <input type="hidden" name="nombre_prod" value="<?php echo $row_registros['nombre']?>">
                         <input type="image" name="eliminar" src="img/papelera2.png" width="25" title="Eliminar">
                         </form>
                     </td>
@@ -96,5 +93,6 @@
             ?>
         </table>
         </div>
+            <?php include("footer.php"); ?>
     </body>
 </html>

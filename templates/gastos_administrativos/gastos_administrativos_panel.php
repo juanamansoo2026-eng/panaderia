@@ -50,6 +50,7 @@ mysqli_close($conex);
     <title>Lista de Gastos Administrativos - Panadería M</title>
 </head>
 <body>
+    <?php include("menu.php"); ?>
 
     <div style="text-align: center">
         <h2>Lista de Gastos Administrativos - Panadería M</h2>
@@ -105,5 +106,6 @@ mysqli_close($conex);
             ?>
         </table>
     </div>
+        <?php include("footer.php"); ?>
 </body>
 </html>
