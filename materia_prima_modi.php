@@ -21,13 +21,12 @@ if (isset($_REQUEST['id_materia_prima'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <title>Modificar Materia Prima - Panadería M</title>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container" style= "width: 500px">
+    <?php include("menu.php"); ?>
+    <div class="container form-container" style= "width: 500px">
     <h2>Modificar Materia Prima - Panadería M</h2>
     <form action="modi_materia_prima.php" method="post" autocomplete="off">
         <label>ID Materia Prima:</label>
@@ -73,5 +72,6 @@ if (isset($_REQUEST['id_materia_prima'])) {
     </form>
     </div>
     <form action="materia_prima_panel.php" id="volver" method="post"></form>        
+    <?php include("footer.php"); ?>
 </body>
 </html>

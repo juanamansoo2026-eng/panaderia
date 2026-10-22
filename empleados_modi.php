@@ -1,7 +1,7 @@
 
 <?php
 
-require_once("../../conexion.php");
+require_once("conexion.php");
 
 $row_registro = null;
 if (isset($_POST['id_empleado']) && ctype_digit((string) $_POST['id_empleado'])) {
@@ -31,7 +31,7 @@ if (isset($_POST['Guardar'])) {
     ");
 
     if ($consulta) {
-        header("Location: ../empleados/empleados_panel.php");
+        header("Location: empleados_panel.php");
         exit;
     } else {
         echo "Error al modificar: " . mysqli_error($conex);
@@ -45,13 +45,12 @@ if (isset($_POST['Guardar'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <title>Modificar Empleados</title>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container" style="width: 500px">
+    <?php include("menu.php"); ?>
+    <div class="container form-container" style="width: 500px">
         <h2>Modificar los Datos de los Empleados - Panadería M</h2>
         <form action="modificar_emple.php" method="post" autocomplete="off">
             <!-- ID Empleado (solo lectura) -->
@@ -132,5 +131,6 @@ if (isset($_POST['Guardar'])) {
 
     <form action="empleados_panel.php" id="volver" method="post"></form>
     
+    <?php include("footer.php"); ?>
 </body>
 </html>

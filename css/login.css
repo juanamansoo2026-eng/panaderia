@@ -1,148 +1,161 @@
+/* ============================================================
+   PANADERÍA MODERNA - LOGIN & RECUPERACIÓN DE CONTRASEÑA
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap');
+
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #f3e2c7;
-
+    font-family: 'Poppins', 'Montserrat', sans-serif;
+    background: linear-gradient(135deg, #FAF6F0 0%, #F3E5D8 100%);
     min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: #3E2723;
 }
-h3{
+
+h3 {
     text-align: center;
-    color: #382214;
+    color: #2C1810;
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 20px;
 }
 
 /* Caja principal */
 .container {
-    width: 500px;
-    background-color: #fff8ed;
-    padding: 35px;
-    border-radius: 15px;
+    width: 480px;
+    background-color: #FFFFFF;
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid #EADEC9;
     box-sizing: border-box;
-
-    box-shadow: 0 8px 20px rgba(91, 58, 35, 0.25);
+    box-shadow: 0 15px 35px rgba(44, 24, 16, 0.1);
 }
 
 /* Título */
 .container h2 {
     text-align: center;
-    color: #6b4226;
-    margin-bottom: 30px;
-    font-size: 28px;
+    color: #2C1810;
+    margin-bottom: 25px;
+    font-size: 26px;
+    font-weight: 700;
 }
 
 /* Etiquetas */
 .container label {
     display: block;
     margin-bottom: 8px;
-    color: #6b4226;
-    font-weight: bold;
+    color: #2C1810;
+    font-weight: 600;
+    font-size: 0.92rem;
 }
 
 /* Campos */
 .container input[type="text"],
 .container input[type="password"] {
     width: 100%;
-    padding: 12px;
-    border: 2px solid #d8b58a;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1.5px solid #EADEC9;
+    border-radius: 10px;
     box-sizing: border-box;
-    font-size: 16px;
-    background-color: #fffdf9;
+    font-size: 15px;
+    background-color: #FFFDF9;
     outline: none;
+    transition: all 0.25s ease;
 }
 
-/* Campo seleccionado */
 .container input[type="text"]:focus,
 .container input[type="password"]:focus {
-    border-color: #b87333;
+    border-color: #B85C28;
+    box-shadow: 0 0 0 3.5px rgba(184, 92, 40, 0.15);
+    background-color: #FFFFFF;
 }
 
-/* Espacio entre campos */
 .container form > div {
-    margin-bottom: 20px;
+    margin-bottom: 22px;
 }
-.mostrar{
+
+.mostrar {
     display: flex;
     justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
 }
-.recuperar{
+
+.recuperar {
     display: flex;
     justify-content: center;
+    margin-top: 15px;
 }
+
+.recuperar a {
+    color: #B85C28;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.recuperar a:hover {
+    color: #96471C;
+    text-decoration: underline;
+}
+
 /* Botones */
-.container button {
+.container button, .boton {
     width: 100%;
     padding: 13px;
     border: none;
-    border-radius: 8px;
-
-    background-color: #a0522d;
+    border-radius: 50px;
+    background: linear-gradient(135deg, #B85C28, #96471C);
     color: white;
-
+    font-family: 'Poppins', sans-serif;
     font-size: 16px;
-    font-weight: bold;
+    font-weight: 600;
     cursor: pointer;
-
-    transition: 0.3s;
+    box-shadow: 0 4px 15px rgba(184, 92, 40, 0.25);
+    transition: all 0.3s ease;
 }
 
-/* Hover */
-.container button:hover {
-    background-color: #7f3f24;
+.container button:hover, .boton:hover {
+    background: linear-gradient(135deg, #96471C, #2C1810);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(184, 92, 40, 0.35);
 }
-
-/* Botón volver */
-.container form:last-child button {
-    background-color: #d2a679;
-    margin-top: 5px;
-}
-
-.container form:last-child button:hover {
-    background-color: #b8865b;
-}
-
-
-
-/* Celulares */
-@media (max-width: 600px) {
-    .container {
-        width: 90% !important;
-        padding: 25px;
-    }
-
-    .container h2 {
-        font-size: 23px;
-    }
-}
-
 
 .mensaje {
-    padding: 12px;
-    border-radius: 8px;
+    padding: 12px 16px;
+    border-radius: 10px;
     text-align: center;
     margin-bottom: 20px;
-    font-weight: normal;
+    font-weight: 500;
+    font-size: 0.92rem;
 }
-
 
 .mensaje.exito {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #a3d9a5;
+    background-color: #E8F5E9;
+    color: #2E7D32;
+    border: 1px solid #A5D6A7;
 }
 
-
 .mensaje.error {
-    background-color: #f8d7da;
-    color: #842029;
-    border: 1px solid #f1aeb5;
+    background-color: #FFEBEE;
+    color: #C62828;
+    border: 1px solid #EF9A9A;
 }
 
 .mensaje.advertencia {
-    background-color: #fff3cd;
-    color: #664d03;
-    border: 1px solid #ffda6a;
+    background-color: #FFF3E0;
+    color: #EF6C00;
+    border: 1px solid #FFCC80;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 92%;
+        padding: 25px;
+    }
 }

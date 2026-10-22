@@ -1,0 +1,431 @@
+/* ============================================================
+   PANADERÍA MODERNA - SISTEMA DE DISEÑO GLOBAL & PALETA DE COLORES
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    /* Paleta de Colores de Panadería Moderna */
+    --bakery-dark: #2C1810;          /* Café Espreso / Chocolate Oscuro */
+    --bakery-dark-hover: #1A0E0A;
+    --bakery-primary: #B85C28;       /* Dorado Artesanal / Terracota */
+    --bakery-primary-hover: #96471C;
+    --bakery-accent: #D97706;        /* Trigo Dorado / Ámbar */
+    --bakery-bg: #FAF6F0;            /* Crema Mañana / Marfil Suave */
+    --bakery-surface: #FFFFFF;       /* Superficie Blanca para Tarjetas */
+    --bakery-border: #EADEC9;        /* Borde Suave Tono Maíz/Crema */
+    --bakery-text: #3E2723;          /* Texto Chocolate Legible */
+    --bakery-text-muted: #7A6257;    /* Texto Secundario Suave */
+    --bakery-row-hover: #FFF8EE;     /* Resaltado de Filas */
+    --bakery-shadow: 0 10px 30px rgba(44, 24, 16, 0.07);
+    --bakery-shadow-sm: 0 4px 12px rgba(44, 24, 16, 0.05);
+
+    /* Estados */
+    --bakery-success: #2E7D32;
+    --bakery-success-bg: #E8F5E9;
+    --bakery-danger: #C62828;
+    --bakery-danger-bg: #FFEBEE;
+    --bakery-warning: #EF6C00;
+    --bakery-warning-bg: #FFF3E0;
+}
+
+/* Base resets & typography */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bakery-bg);
+    color: var(--bakery-text);
+    line-height: 1.6;
+    padding-top: 90px; /* Offset para el menú fijo si está presente */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Títulos y Encabezados */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--bakery-dark);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.02em;
+}
+
+h2 {
+    font-size: 1.8rem;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 8px;
+    margin-top: 10px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--bakery-primary), var(--bakery-accent));
+    border-radius: 2px;
+}
+
+h3 {
+    font-size: 1.3rem;
+    color: var(--bakery-primary);
+}
+
+/* Enlaces */
+a {
+    color: var(--bakery-primary);
+    text-decoration: none;
+    transition: color 0.25s ease;
+}
+
+a:hover {
+    color: var(--bakery-primary-hover);
+}
+
+/* Layout & Containers */
+.container, div.container {
+    width: 92%;
+    max-width: 1400px;
+    margin: 20px auto 40px auto;
+    padding: 25px 30px;
+    background: var(--bakery-surface);
+    border-radius: 16px;
+    border: 1px solid var(--bakery-border);
+    box-shadow: var(--bakery-shadow);
+}
+
+.form-container {
+    width: min(94%, 760px) !important;
+    max-width: 760px !important;
+    margin: 30px auto 40px;
+}
+
+.form-container h2 {
+    text-align: center;
+}
+
+.resultado-container {
+    text-align: center;
+    padding: 36px 32px;
+}
+
+.resultado-container h2 {
+    display: block;
+    margin: 0 auto 24px;
+}
+
+.resultado-container .mensaje {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    max-width: 560px;
+    margin: 0 auto 22px;
+}
+
+.resultado-container .mensaje .ui-icon {
+    margin: 0;
+}
+
+.resultado-acciones {
+    display: flex;
+    justify-content: center;
+}
+
+/* Tarjetas especializadas */
+.bakery-card {
+    background: var(--bakery-surface);
+    border: 1px solid var(--bakery-border);
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: var(--bakery-shadow);
+    margin: 20px auto;
+    max-width: 900px;
+}
+
+.table-container {
+    width: 98%;
+    max-width: 1600px;
+    margin: 25px auto;
+    background: var(--bakery-surface);
+    padding: 24px;
+    border-radius: 16px;
+    border: 1px solid var(--bakery-border);
+    box-shadow: var(--bakery-shadow);
+    overflow-x: auto;
+}
+
+/* Botones */
+.ui-icon {
+    width: 1.15em;
+    height: 1.15em;
+    flex: 0 0 auto;
+    vertical-align: -0.2em;
+    margin-right: 0.4em;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icon-badge .ui-icon {
+    width: 1.35em;
+    height: 1.35em;
+    margin: 0;
+    color: var(--bakery-primary);
+}
+
+button, .button, input[type="submit"], input[type="button"], a.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 22px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #FFFFFF !important;
+    background: linear-gradient(135deg, var(--bakery-primary), #A64E1E);
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(184, 92, 40, 0.25);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin: 5px;
+    text-transform: none;
+    height: auto;
+    line-height: 1.4;
+}
+
+button:hover, .button:hover, input[type="submit"]:hover, input[type="button"]:hover, a.button:hover {
+    background: linear-gradient(135deg, var(--bakery-primary-hover), var(--bakery-dark));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(184, 92, 40, 0.35);
+    color: #FFFFFF !important;
+}
+
+.button-outline, .button.button-outline {
+    background: transparent !important;
+    color: var(--bakery-primary) !important;
+    border: 2px solid var(--bakery-primary) !important;
+    box-shadow: none;
+}
+
+.button-outline:hover, .button.button-outline:hover {
+    background: var(--bakery-primary) !important;
+    color: #FFFFFF !important;
+}
+
+input[type="submit"][value="Cancelar"],
+input[type="submit"][value="No"] {
+    background: transparent !important;
+    color: var(--bakery-primary) !important;
+    border: 2px solid var(--bakery-primary) !important;
+    box-shadow: none;
+}
+
+input[type="submit"][value="Cancelar"]:hover,
+input[type="submit"][value="No"]:hover {
+    background: var(--bakery-primary) !important;
+    color: #FFFFFF !important;
+}
+
+input[type="submit"][value="Si"] {
+    background: linear-gradient(135deg, var(--bakery-danger), #9A1B1B) !important;
+}
+
+.button-danger, input[value="Eliminar"].button, input[value="Si"].button {
+    background: linear-gradient(135deg, var(--bakery-danger), #9A1B1B) !important;
+    box-shadow: 0 4px 12px rgba(198, 40, 40, 0.25) !important;
+}
+
+.button-danger:hover {
+    background: linear-gradient(135deg, #9A1B1B, #721010) !important;
+}
+
+/* Tablas estilizadas */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 15px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--bakery-border) !important;
+}
+
+/* Reemplazar cabecera heredada (como background:#c561ff) */
+th, tr[style*="background"] th, tr[style*="#c561ff"] {
+    background: linear-gradient(135deg, var(--bakery-dark), #4A2E1B) !important;
+    color: #FFFFFF !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 14px 16px;
+    border: none !important;
+    text-align: center;
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--bakery-border) !important;
+    border-right: 1px solid rgba(234, 222, 201, 0.5) !important;
+    border-top: none !important;
+    border-left: none !important;
+    font-size: 0.93rem;
+    color: var(--bakery-text);
+    background-color: var(--bakery-surface);
+    transition: background-color 0.2s ease;
+}
+
+td:last-child {
+    border-right: none !important;
+}
+
+tr:last-child td {
+    border-bottom: none !important;
+}
+
+tr:hover td {
+    background-color: var(--bakery-row-hover);
+}
+
+/* Iconos de acciones en tabla */
+td input[type="image"] {
+    transition: transform 0.2s ease, filter 0.2s ease;
+    padding: 4px;
+    border-radius: 6px;
+    background: rgba(184, 92, 40, 0.08);
+}
+
+td input[type="image"]:hover {
+    transform: scale(1.2);
+    background: rgba(184, 92, 40, 0.2);
+}
+
+button.table-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    padding: 6px;
+    margin: 0;
+    color: var(--bakery-primary) !important;
+    background: rgba(184, 92, 40, 0.08) !important;
+    border: 1px solid var(--bakery-border);
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+button.table-action:hover {
+    color: #FFFFFF !important;
+    background: var(--bakery-primary) !important;
+}
+
+button.table-action svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+}
+
+/* Formularios */
+form {
+    margin: 15px 0;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--bakery-dark);
+    margin-bottom: 6px;
+    margin-top: 14px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="number"],
+input[type="date"],
+input[type="datetime-local"],
+input[type="bigint"],
+select,
+textarea {
+    width: 100%;
+    padding: 11px 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    color: var(--bakery-text);
+    background-color: #FFFDF9;
+    border: 1.5px solid var(--bakery-border);
+    border-radius: 10px;
+    outline: none;
+    transition: all 0.25s ease;
+    margin-bottom: 12px;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: var(--bakery-primary);
+    box-shadow: 0 0 0 3.5px rgba(184, 92, 40, 0.15);
+    background-color: #FFFFFF;
+}
+
+/* Alertas & Mensajes */
+.mensaje {
+    padding: 14px 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.mensaje.exito {
+    background-color: var(--bakery-success-bg);
+    color: var(--bakery-success);
+    border: 1px solid #A5D6A7;
+}
+
+.mensaje.error {
+    background-color: var(--bakery-danger-bg);
+    color: var(--bakery-danger);
+    border: 1px solid #EF9A9A;
+}
+
+.mensaje.advertencia {
+    background-color: var(--bakery-warning-bg);
+    color: var(--bakery-warning);
+    border: 1px solid #FFCC80;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    body {
+        padding-top: 100px;
+    }
+    .container, .bakery-card, .table-container {
+        width: 95%;
+        padding: 18px;
+    }
+    h2 {
+        font-size: 1.4rem;
+    }
+    th, td {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+}

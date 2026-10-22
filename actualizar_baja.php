@@ -1,6 +1,6 @@
 <?php
 // Conexión a la base de datos
-require_once("../../conexion.php");
+require_once("conexion.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Recibimos los datos enviados por AJAX

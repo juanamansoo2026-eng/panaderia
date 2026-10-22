@@ -1,12 +1,26 @@
+/* ============================================================
+   PANADERÍA MODERNA - FOOTER ESTILIZADO
+   ============================================================ */
+
 footer {
+    background-color: #2C1810;
+    color: #FAF6F0;
     text-align: center;
-    font-family: sans-serif;
-    background-color: #020236;
-    color: #fff;
-    padding: 10px;
-    margin-top: 10px;
-    font-size: 15px;
+    padding: 22px 15px;
+    margin-top: auto;
+    border-top: 3px solid #B85C28;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.1);
 }
-.footer{
-    font-size: 17px;
+
+.footer {
+    margin: 4px 0;
+    color: #E0D3C5;
+    letter-spacing: 0.3px;
+}
+
+footer p:last-child {
+    font-weight: 600;
+    color: #D97706;
 }

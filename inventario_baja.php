@@ -8,13 +8,12 @@ $id_inventario= $_REQUEST["id_inventario"];
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <title>Eliminar Inventario - Panadería M</title>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container" style= "text-align: center">
+    <?php include("menu.php"); ?>
+    <div class="container form-container" style= "text-align: center">
     <h2>Eliminar Inventario - Panadería M</h2>
     <h3>Esta por eliminar el Inventario de:</h3>
     <form action="baja_inventario.php">
@@ -26,5 +25,7 @@ $id_inventario= $_REQUEST["id_inventario"];
     </form>
     <form action="inventario_panel.php" id="volver">
     </form>
+        </div>
+    <?php include("footer.php"); ?>
 </body>
 </html>

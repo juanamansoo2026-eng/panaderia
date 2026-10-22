@@ -21,9 +21,6 @@ if (isset($_REQUEST['id_pedido_compra'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <title>Modificar Pedido de Compra - Panadería M</title>
     <script>
         // Función para actualizar el total de compra y otros campos (precio, marca)
@@ -73,9 +70,11 @@ if (isset($_REQUEST['id_pedido_compra'])) {
             actualizarTotal();
         };
     </script>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container" style="width: 600px">
+    <?php include("menu.php"); ?>
+    <div class="container form-container" style="width: 600px">
         <h2 style="text-align: center">Modificar Pedido de Compra - Panadería M</h2>
         <form action="modi_pedido_compra.php" method="post" autocomplete="off" required>
             
@@ -138,5 +137,6 @@ if (isset($_REQUEST['id_pedido_compra'])) {
         </form>
         <form action="pedido_compra_panel.php" id="volver" method="post"></form>
     </div>
+    <?php include("footer.php"); ?>
 </body>
 </html>

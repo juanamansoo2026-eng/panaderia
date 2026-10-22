@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <title>Alta de Materia Prima - Panadería M</title>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container" style="width: 600px">
+    <?php include("menu.php"); ?>
+    <div class="container form-container" style="width: 600px">
     <h2 style="text-align: center">Alta de Materia Prima - Panadería M</h2>
     <form action="alta_materia_prima.php" method="post" autocomplete="off" required> <!--autocomplete on/off es para que no se queden guardados datos-->
         <label>Nombre de la Materia Prima:</label>
@@ -57,5 +56,7 @@
         <input type="submit" value="Cancelar" form="volver">
     </form>
     <form action="materia_prima_panel.php" id="volver" method="post"></form>
+        </div>
+    <?php include("footer.php"); ?>
 </body>
 </html>

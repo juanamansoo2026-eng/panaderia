@@ -9,101 +9,70 @@ INNER JOIN materia_prima ON materia_prima.id_materia_prima = inventario.materia_
 ORDER BY id_inventario asc") 
 or die ("problema en la consulta".mysqli_error($conex));
 mysqli_close($conex);
-
 ?>
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
-    <style>
-            .table-container {
-                max-width: 90%; 
-                margin: 0 auto;
-            }
-
-            table {
-                width: 100%; 
-                border-collapse: collapse; 
-            }
-
-            th, td {
-                padding: 5px;
-                text-align: center;
-                border: 1px solid;
-            }
-
-            td form {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                margin: 0;
-            }
-
-            td input[type="image"] {
-                display: block;
-                margin: auto;
-            }
-        </style>        
-    <title>Lista de inventario de Materia Prima - Panadería M</title>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
+    <title>Inventario de Materia Prima - Panadería M</title>
 </head>
 <body>
+    <?php include("menu.php"); ?>
 
-    <div style="text-align: center">
-        <h2>Lista de inventario de Materia Prima - Panadería M</h2>
-        <div>
-            <a class="button" href="inventario_alta.php">Nuevo inventario</a>
-            <a class="button" href="proveedores_panel.php">Volver</a>
-            <a class="button" href="page1.php">Volver al Menu</a>
-        </div>
-    </div>
-    <br>
     <div class="table-container">
-        <table border=1 width="80%">
-            <tr style="background:#c561ff;">
-                <th>ID Inventario</th>
-                <th>Nombre</th>
-                <th>Marca</th>
-                <th>Cantidad de Ingreso</th>
-                <th>Cantidad de Salida</th>
-                <th>Stock Total</th>
-                <th>Fecha Modificación</th>
-                <th colspan=2>Acciones</th>
-            </tr>
-            <?php
-            while($row_registros= mysqli_fetch_assoc($registros)) { ?>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2>Inventario de Materia Prima - Panadería M</h2>
+            <div style="margin-top: 15px;">
+                <a class="button" href="inventario_alta.php">➕ Nuevo Registro</a>
+                <a class="button" href="proveedores_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/></svg> Proveedores</a>
+                <a class="button button-outline" href="page1.php">⬅ Volver al Menú</a>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Materia Prima</th>
+                    <th>Marca</th>
+                    <th>Ingresos</th>
+                    <th>Salidas</th>
+                    <th>Stock Total</th>
+                    <th>Última Modificación</th>
+                    <th colspan="2">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php while($row_registros= mysqli_fetch_assoc($registros)) { ?>
                 <tr>   
-                    <td><?php echo $row_registros['id_inventario'];?></td>
-                    <td><?php echo $row_registros['nombre_mp'];?></td>
-                    <td><?php echo $row_registros['nombre_marca'];?></td>
-                    <td><?php echo $row_registros['cantidad_ingreso_mp'];?></td>
-                    <td><?php echo $row_registros['cantidad_salida_mp'];?></td>
-                    <td><?php echo $row_registros['stock_total'];?></td>
-                    <td><?php echo $row_registros['fecha_modi'];?></td>
+                    <td><?php echo htmlspecialchars($row_registros['id_inventario']);?></td>
+                    <td><strong><?php echo htmlspecialchars($row_registros['nombre_mp']);?></strong></td>
+                    <td><?php echo htmlspecialchars($row_registros['nombre_marca']);?></td>
+                    <td style="color:#2E7D32;">+<?php echo htmlspecialchars($row_registros['cantidad_ingreso_mp']);?></td>
+                    <td style="color:#C62828;">-<?php echo htmlspecialchars($row_registros['cantidad_salida_mp']);?></td>
+                    <td><strong style="color:var(--bakery-primary); font-size:1.05rem;"><?php echo htmlspecialchars($row_registros['stock_total']);?></strong></td>
+                    <td><?php echo htmlspecialchars($row_registros['fecha_modi']);?></td>
                     <td align="center">
                         <form action="inventario_modi.php" method="post">
-                            <input type="hidden" name="id_inventario" value="<?php echo $row_registros['id_inventario'];?>"> <!-- para enviar datos, hiden es ocultar-->
-                            <!--<input type="submit" name="editar" value="Modificar">-->
-                            <input type="image" name="editar" src="img/lapiz2.png" width="20" title="Editar">
+                            <input type="hidden" name="id_inventario" value="<?php echo $row_registros['id_inventario'];?>">
+                            <input type="image" name="editar" src="img/lapiz2.png" width="22" title="Editar">
                         </form>
                     </td>
                     <td align="center">
                         <form action="inventario_baja.php" method="post">
-                        <input type="hidden" name="id_inventario" value="<?php echo $row_registros['id_inventario']; ?>">
-                        <input type="hidden" name="nombre_inventario" value="<?php echo $row_registros['nombre_mp']?>">
-                        <!--<input type="submit" value="Eliminar">-->
-                        <input type="image" name="eliminar" src="img/papelera2.png" width="25" title="Eliminar">
+                            <input type="hidden" name="id_inventario" value="<?php echo $row_registros['id_inventario']; ?>">
+                            <input type="hidden" name="nombre_inventario" value="<?php echo htmlspecialchars($row_registros['nombre_mp']);?>">
+                            <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar">
                         </form>
                     </td>
                 </tr>
-            <?php
-            }
-            ?>
+            <?php } ?>
+            </tbody>
         </table>
     </div>
+
+    <?php include("footer.php"); ?>
 </body>
 </html>

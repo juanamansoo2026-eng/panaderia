@@ -1,16 +1,14 @@
 /* ============================================================
-   RESETEO GLOBAL & VARIABLES
-============================================================ */
-/* Se asume que variables como --primary están en :root (definido en inicio.css) 
-   Si no, definimos fallbacks o copiamos :root aquí también */
+   PANADERÍA MODERNA - NAVBAR & MENÚ DE NAVEGACIÓN
+   ============================================================ */
 
 :root {
-    --primary: #4A63E7;
-    --primary-dark: #324CD1;
-    --secondary: #020236;
+    --primary: #B85C28;
+    --primary-dark: #96471C;
+    --secondary: #2C1810;
     --text-white: #ffffff;
-    --glass-bg: rgba(2, 2, 54, 0.95);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-bg: rgba(44, 24, 16, 0.94);
+    --glass-border: rgba(234, 222, 201, 0.2);
 }
 
 * {
@@ -21,30 +19,28 @@
     text-decoration: none;
 }
 
-/* ============================================================
-   NAVBAR MODERN
-============================================================ */
 .nav-class {
     width: 100%;
     height: 80px;
     background: var(--glass-bg);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--glass-border);
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 40px;
     position: fixed;
-    /* Fixed navigation */
     top: 0;
     left: 0;
     z-index: 1000;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-/* LOGO */
 .logo {
-    height: 50px;
+    height: 64px;
+    width: 64px;
+    object-fit: contain;
     transition: transform 0.3s ease;
 }
 
@@ -52,7 +48,18 @@
     transform: scale(1.05);
 }
 
-/* MENÚ DESKTOP */
+.brand-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 0 0 auto;
+    color: #FFFFFF !important;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
 .menu {
     flex: 1;
     display: flex;
@@ -67,8 +74,20 @@
     align-items: center;
 }
 
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 0 0 auto;
+}
+
+.nav-user span {
+    color: #F7EBE1;
+    font-size: 0.85rem;
+}
+
 .link {
-    color: rgba(255, 255, 255, 0.8) !important;
+    color: #F7EBE1 !important;
     font-size: 15px;
     padding: 8px 0;
     font-weight: 500;
@@ -77,12 +96,10 @@
 }
 
 .link:hover {
-    color: white !important;
+    color: #FFFFFF !important;
     background: transparent;
-    /* Remove old bg */
 }
 
-/* Underline effect */
 .link::after {
     content: '';
     position: absolute;
@@ -90,7 +107,7 @@
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: var(--primary);
+    background: linear-gradient(90deg, #D97706, #B85C28);
     transition: width 0.3s ease;
 }
 
@@ -98,46 +115,6 @@
     width: 100%;
 }
 
-/* BOTONES DERECHA */
-.plataformas-container {
-    display: flex;
-    gap: 15px;
-}
-
-.btn-plataforma {
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    border-radius: 50px;
-    /* Modern pill shape */
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.superior {
-    background: linear-gradient(135deg, #4A63E7, #3148FF);
-}
-
-.superior:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(74, 99, 231, 0.4);
-}
-
-.secundario {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.secundario:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
-}
-
-/* ============================================================
-   ICONOS FLOTANTES (WHATSAPP/REDES)
-============================================================ */
 .btnwapp {
     position: fixed;
     bottom: 30px;
@@ -152,87 +129,32 @@
     transform: scale(1.1) rotate(10deg);
 }
 
-.contenedor-logo {
-    display: none;
-    /* Hide old redundant icons if implied */
+.img-logos {
+    width: 45px;
+    height: 45px;
+    margin: 5px;
+    transition: transform 0.2s;
 }
 
-/* ============================================================
-   MENÚ MOBILE (HAMBURGUESA)
-============================================================ */
-.menu-mobile {
-    display: none;
+.img-logos:hover {
+    transform: scale(1.15);
 }
 
-.hamb-icon {
-    width: 32px;
-    cursor: pointer;
-    filter: invert(1);
-    /* Make white */
-}
-
-#menu_hamburguesa {
-    display: none !important;
-}
-
-/* PANEL MOBILE */
-.ul-links-mobile {
-    position: fixed;
-    top: 0;
-    right: -100%;
-    /* Push completely off-screen */
-    width: 80%;
-    max-width: 300px;
-    height: 100vh;
-    background: var(--secondary);
-    padding: 80px 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 9998;
-    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
-}
-
-#menu_hamburguesa:checked~.ul-links-mobile {
-    right: 0 !important;
-}
-
-.ul-links-mobile .link {
-    font-size: 18px;
-    color: white !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 15px;
-}
-
-.close-mobile {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    font-size: 28px;
-    color: white;
-    cursor: pointer;
-}
-
-/* BACKDROP for mobile menu (optional but nice) */
-#menu_hamburguesa:checked~.menu-backdrop {
-    display: block;
-}
-
-/* ============================================================
-   RESPONSIVE
-============================================================ */
+/* Responsive Menu */
 @media (max-width: 900px) {
     .nav-class {
         padding: 0 20px;
     }
 
-    .menu-desktop,
-    .plataformas-container {
-        display: none !important;
+    .menu {
+        margin: 0 16px;
     }
 
-    .menu-mobile {
-        display: block;
+    .menu-desktop .ul-links {
+        gap: 16px;
+    }
+
+    .link {
+        font-size: 13px;
     }
 }

@@ -1,5 +1,5 @@
 <?php
-include '../../conexion.php';
+include 'conexion.php';
 
 $registroExitoso = false;
 $mensajeError = "";
@@ -125,12 +125,11 @@ function registrarUsuario(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panadería M - Registrarse</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container">
+    <?php include("menu.php"); ?>
+    <div class="container form-container">
         <?php if ($registroExitoso): ?>
 
             <script>
@@ -140,7 +139,7 @@ function registrarUsuario(
             <p>Registro exitoso. Puedes iniciar sesión.</p>
 
             <form action="index.php" method="get">
-                <button type="submit" class="link-button">
+                <button type="submit" class="button button-outline">
                     Volver al Menú Principal
                 </button>
             </form>
@@ -199,10 +198,11 @@ function registrarUsuario(
                 <input type="hidden" name="baja" value="1">
 
                 <br>
-                <button type="submit" class="link-button">Registrarse</button>
+                <button type="submit" class="button">Registrarse</button>
                 <a class="button" href="empleados_panel.php">Cancelar</a>
             </form>
         <?php endif; ?>
     </div>
+    <?php include("footer.php"); ?>
 </body>
 </html>

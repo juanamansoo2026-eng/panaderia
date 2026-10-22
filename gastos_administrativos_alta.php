@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <title>Alta Gastos Administrativos - Panadería M</title>
     <script>
         function actualizarEmpleado() {
@@ -15,9 +12,11 @@
             document.getElementById("empleado").value = empleado; // Asignar el nombre del empleado al campo de texto
         }
     </script>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container" style="width: 600px">
+    <?php include("menu.php"); ?>
+    <div class="container form-container" style="width: 600px">
     <h2 style="text-align: center">Alta Gastos Administrativos - Panadería M</h2>
     <form action="alta_gastos_administrativos.php" method="post" autocomplete="off" required>
         
@@ -76,5 +75,7 @@
         <input type="submit" value="Cancelar" form="volver">
     </form>
     <form action="gastos_administrativos_panel.php" id="volver" method="post"></form>
+        </div>
+    <?php include("footer.php"); ?>
 </body>
 </html>

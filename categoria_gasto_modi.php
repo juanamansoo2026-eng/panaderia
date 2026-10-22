@@ -18,13 +18,12 @@ if (isset($_REQUEST['id_categoria_gasto'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css">
     <title>Modificar las Categorias de Gastos - Panadería M</title>
+    <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
-    <div class="container" style= "width: 500px">
+    <?php include("menu.php"); ?>
+    <div class="container form-container" style= "width: 500px">
     <h2>Modificar las Categoria de Gastos- Panadería M</h2>
     <form action="modi_categoria_gasto.php" method="post" autocomplete="off"> <!--autocomplete on/off es para que no se queden guardados datos-->
         <label>ID Categoria:</label>
@@ -39,5 +38,6 @@ if (isset($_REQUEST['id_categoria_gasto'])) {
     </form>
     </div>
     <form action="categoria_gasto_panel.php" id="volver" method="post"></form>        
+    <?php include("footer.php"); ?>
 </body>
 </html>
