@@ -61,7 +61,7 @@ mysqli_close($conex);
                             <input type="image" name="editar" src="img/pdf.png" width="22" title="Imprimir PDF / Detalles">
                         </form>
                     </td>
-                    <td align="center">
+                    <!--<td align="center">
                         <form action="ventas_baja.php" method="post">
                             <input type="hidden" name="id_venta" value="<?php echo $row_registros['id_venta']; ?>">
                             <input type="hidden" name="info_venta" value="<?php echo htmlspecialchars($row_registros['c_nombre'] . ' ' . $row_registros['c_apellido'])?>">
@@ -69,7 +69,7 @@ mysqli_close($conex);
                             <input type="hidden" name="info_fecha" value="<?php echo $row_registros['fecha']?>">
                             <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar Venta">
                         </form>
-                    </td>
+                    </td>-->
                 </tr>
             <?php } ?>
             </tbody>

@@ -11,7 +11,7 @@ $username = isset($_SESSION['username']) ? htmlspecialchars((string) $_SESSION['
 <nav class="nav-class" aria-label="Navegaci&oacute;n principal">
     <a class="link brand-link" href="<?php echo $prefix; ?>page1.php">
         <img class="logo" src="<?php echo $prefix; ?>img/logo_panaderia.png" alt="Panader&iacute;a M">
-        <span>Panader&iacute;a</span>
+        <span>Panader&iacute;a "M"</span>
     </a>
     <section class="menu menu-desktop">
         <ul class="ul-links">

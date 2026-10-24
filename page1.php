@@ -84,12 +84,12 @@ if (!isset($_SESSION['username'])) {
                 <a class="button" href="ventas_panel.php">Ver Ventas</a>
             </div>
 
-            <div class="dashboard-card">
+            <!-- <div class="dashboard-card">
                 <div class="icon-badge"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M16 20v-1a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v1"/><circle cx="10" cy="8" r="3"/><path d="M20 20v-1a4 4 0 0 0-3-4"/></svg></div>
                 <h3>Clientes</h3>
                 <p>Base de datos de clientes y contactos</p>
                 <a class="button" href="clientes_panel.php">Ver Clientes</a>
-            </div>
+            </div> -->
 
             <div class="dashboard-card">
                 <div class="icon-badge"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="14" r="5"/><path d="M7 14H5a3 3 0 1 1 1-5.8A4 4 0 0 1 14 6a3 3 0 1 1 4 4h-1"/></svg></div>
