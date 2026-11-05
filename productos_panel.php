@@ -19,9 +19,14 @@
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Panel de Productos - Panadería M</h2>
-            <div style="margin-top: 15px;">
-                <a class="button" href="productos_alta.php">➕ Nuevo Producto</a>
-                <a class="button button-outline" href="page1.php">⬅ Volver al Menú</a>
+            <div class="div-mayor">
+                <div class="b1">
+                    <a class="button" href="productos_alta.php">Nuevo Producto</a>
+                </div>
+
+                <div class="b1">
+                    <a class="button button-outline" href="page1.php">Volver al Menú</a>
+                </div>
             </div>
         </div>
 
@@ -48,13 +53,13 @@
                             <input type="image" name="editar" src="img/lapiz2.png" width="22" title="Editar">
                         </form>
                     </td>
-                    <td align="center">
+                    <!-- <td align="center">
                         <form action="productos_baja.php" method="post">
                             <input type="hidden" name="id_producto" value="<?php echo $row_registros['id_producto'];?>">
                             <input type="hidden" name="nombre_prod" value="<?php echo htmlspecialchars($row_registros['nombre']);?>">
                             <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar">
                         </form>
-                    </td>
+                    </td> -->
                 </tr>
             <?php } ?>
             </tbody>

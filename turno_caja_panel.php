@@ -20,10 +20,14 @@ mysqli_close($conex);
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Turnos de Caja - Panadería M</h2>
-            <div style="margin-top: 15px;">
-                <a class="button" href="turno_caja_alta.php">➕ Nuevo Turno</a>
-                <a class="button" href="empleados_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="14" r="5"/><path d="M7 14H5a3 3 0 1 1 1-5.8A4 4 0 0 1 14 6a3 3 0 1 1 4 4h-1"/></svg> Empleados</a>
-                <a class="button button-outline" href="page1.php">⬅ Volver al Menú</a>
+            <div class="div-mayor">
+                <div class="b1">
+                    <a class="button" href="turno_caja_alta.php">Nuevo Turno</a>
+                </div>
+
+                <div class="b1">
+                    <a class="button button-outline" href="ventas_panel.php">Volver</a>
+                </div>
             </div>
         </div>
 
@@ -52,13 +56,13 @@ mysqli_close($conex);
                             <input type="image" name="editar" src="img/lapiz2.png" width="22" title="Editar">
                         </form>
                     </td>
-                    <td align="center">
+                    <!-- <td align="center">
                         <form action="turno_caja_baja.php" method="post">
                             <input type="hidden" name="id_turno" value="<?php echo $row_registros['id_turno']; ?>">
                             <input type="hidden" name="nomyape_emple" value="<?php echo htmlspecialchars($row_registros['nombre'] . ' ' . $row_registros['apellido']);?>">
                             <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar">
                         </form>
-                    </td>
+                    </td> -->
                 </tr>
             <?php } ?>
             </tbody>

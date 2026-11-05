@@ -19,11 +19,15 @@
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Lista de Proveedores - Panadería M</h2>
-            <div style="margin-top: 15px;">
-                <a class="button" href="proveedores_alta.php">➕ Nuevo Proveedor</a>
-                <a class="button" href="materia_prima_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21V4m0 7c-3 0-5-2-5-5 3 0 5 2 5 5zm0 4c3 0 5-2 5-5-3 0-5 2-5 5z"/></svg> Materia Prima</a>
-                <a class="button" href="inventario_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4m-9 4v10"/></svg> Inventario</a>
-                <a class="button button-outline" href="page1.php">⬅ Volver al Menú</a>
+            <div class="div-mayor">
+                <div class="b1">
+                    <a class="button" href="proveedores_alta.php">Nuevo Proveedor</a>
+                    <a class="button" href="materia_prima_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M12 21V4m0 7c-3 0-5-2-5-5 3 0 5 2 5 5zm0 4c3 0 5-2 5-5-3 0-5 2-5 5z"/></svg> Materia Prima</a>
+                </div>
+
+                <div class="b1">
+                    <a class="button button-outline" href="page1.php">Volver al Menú</a>
+                </div>
             </div>
         </div>
 
@@ -52,13 +56,13 @@
                             <input type="image" name="editar" src="img/lapiz2.png" width="22" title="Editar">
                         </form>
                     </td>
-                    <td align="center">
+                    <!-- <td align="center">
                         <form action="proveedores_baja.php" method="post">
                             <input type="hidden" name="id_proveedor" value="<?php echo $row_registros['id_proveedor'];?>">
                             <input type="hidden" name="nomyape_prov" value="<?php echo htmlspecialchars($row_registros['nombre'] . " " . $row_registros['apellido']);?>">
                             <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar">
                         </form>
-                    </td>
+                    </td> -->
                 </tr>
             <?php } ?>
             </tbody>

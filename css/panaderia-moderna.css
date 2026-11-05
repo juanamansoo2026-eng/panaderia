@@ -412,6 +412,21 @@ input:focus, select:focus, textarea:focus {
     border: 1px solid #FFCC80;
 }
 
+.div-mayor {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+/* b1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+} */
+
 /* Responsividad */
 @media (max-width: 768px) {
     body {

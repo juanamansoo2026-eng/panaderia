@@ -57,21 +57,23 @@
     font-family: 'Montserrat', sans-serif;
     font-size: 1.2rem;
     font-weight: 700;
-    white-space: nowrap;
+ 
 }
 
 .menu {
-    flex: 1;
+   
     display: flex;
     justify-content: center;
     margin: 0 40px;
 }
 
-.menu-desktop .ul-links {
+.ul-links {
     display: flex;
-    gap: 30px;
+    flex-direction: row;
+    gap: 15px;
     list-style: none;
     align-items: center;
+    justify-content: center;
 }
 
 .nav-user {
@@ -88,7 +90,7 @@
 
 .link {
     color: #F7EBE1 !important;
-    font-size: 15px;
+    font-size: 12px;
     padding: 8px 0;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -141,6 +143,13 @@
 }
 
 /* Responsive Menu */
+@media (max-width: 1238px) {
+    a span {
+        display: none;
+
+    }
+}
+
 @media (max-width: 900px) {
     .nav-class {
         padding: 0 20px;

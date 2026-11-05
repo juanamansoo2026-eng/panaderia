@@ -38,10 +38,14 @@
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Lista de Empleados Inactivos - Panadería M</h2>
-            <div style="margin-top: 15px;">
-                <a class="button" href="nuevo_emple.php">➕ Nuevo Empleado</a>
-                <a class="button" href="empleados_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="14" r="5"/><path d="M7 14H5a3 3 0 1 1 1-5.8A4 4 0 0 1 14 6a3 3 0 1 1 4 4h-1"/></svg> Empleados Activos</a>
-                <a class="button button-outline" href="page1.php">⬅ Volver al Menú</a>
+            <div class="div-mayor">
+                <div class="b1">
+                    <a class="button" href="empleados_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="14" r="5"/><path d="M7 14H5a3 3 0 1 1 1-5.8A4 4 0 0 1 14 6a3 3 0 1 1 4 4h-1"/></svg> Empleados Activos</a>
+                </div>
+
+                <div class="b1">
+                    <a class="button button-outline" href="empleados_panel.php">Volver</a>
+                </div>
             </div>
         </div>
 

@@ -22,12 +22,17 @@ mysqli_close($conex);
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Materia Prima - Panadería M</h2>
-            <div style="margin-top: 15px;">
-                <a class="button" href="materia_prima_alta.php">➕ Nueva Materia Prima</a>
-                <a class="button" href="marca_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 13 13 20 4 11V4h7z"/><circle cx="8" cy="8" r="1"/></svg> Marcas</a>
-                <a class="button" href="proveedores_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7z"/><circle cx="7" cy="19" r="1.5"/><circle cx="18" cy="19" r="1.5"/></svg> Proveedores</a>
-                <a class="button button-outline" href="page1.php">⬅ Volver al Menú</a>
+            <div class="div-mayor">
+                <div class="b1">
+                    <a class="button" href="materia_prima_alta.php">Nueva Materia Prima</a>
+                    <a class="button" href="marca_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 13 13 20 4 11V4h7z"/><circle cx="8" cy="8" r="1"/></svg> Marcas</a>
+                </div>
+
+                <div class="b1">
+                    <a class="button button-outline" href="proveedores_panel.php">Volver</a>
+                </div>
             </div>
+
         </div>
 
         <table>
@@ -55,13 +60,13 @@ mysqli_close($conex);
                             <input type="image" name="editar" src="img/lapiz2.png" width="22" title="Editar">
                         </form>
                     </td>
-                    <td align="center">
+                    <!-- <td align="center">
                         <form action="materia_prima_baja.php" method="post">
                             <input type="hidden" name="id_materia_prima" value="<?php echo $row_registros['id_materia_prima']; ?>">
                             <input type="hidden" name="nombre_mp" value="<?php echo htmlspecialchars($row_registros['nombre_mp']);?>">
                             <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar">
                         </form>
-                    </td>
+                    </td> -->
                 </tr>
             <?php } ?>
             </tbody>

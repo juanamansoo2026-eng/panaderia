@@ -19,10 +19,14 @@
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Panel de Clientes - Panadería M</h2>
-            <div style="margin-top: 15px;">
-                <a class="button" href="clientes_alta.php">➕ Nuevo Cliente</a>
-                <a class="button" href="ventas_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6L5 8z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg> Panel de Ventas</a>
-                <a class="button button-outline" href="page1.php">⬅ Volver al Menú</a>
+            <div class="div-mayor">
+                <div class="b1">
+                    <a class="button" href="clientes_alta.php">Nuevo Cliente</a>
+                </div>
+
+                <div class="b1">
+                    <a class="button button-outline" href="page1.php">Volver al Menú</a>
+                </div>
             </div>
         </div>
 
@@ -53,13 +57,13 @@
                             <input type="image" name="editar" src="img/lapiz2.png" width="22" title="Editar">
                         </form>
                     </td>
-                    <td align="center">
+                    <!-- <td align="center">
                         <form action="clientes_baja.php" method="post">
                             <input type="hidden" name="id_cliente" value="<?php echo $row_registros['id_cliente'];?>">
                             <input type="hidden" name="nomyape_cli" value="<?php echo htmlspecialchars($row_registros['nombre'] . " " . $row_registros['apellido']);?>">
                             <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar">
                         </form>
-                    </td>
+                    </td> -->
                 </tr>
             <?php } ?>
             </tbody>

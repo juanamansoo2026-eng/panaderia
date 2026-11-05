@@ -43,6 +43,7 @@ while ($row_producto = $productos_result->fetch_assoc()) {
 
                 <div>
                     <label for="empleado_id">Empleado:</label>
+                    <label>
                     <select name="empleado_id" id="empleado_id" required>
                         <option value="">Seleccione un empleado</option>
                         <?php while ($row_empleado = $empleados_result->fetch_assoc()) { ?>
