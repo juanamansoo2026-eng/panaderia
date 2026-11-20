@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['id_marca'])) {
     $id_marca = $_REQUEST['id_marca'];
     require_once("conexion.php"); //conexion a la bd

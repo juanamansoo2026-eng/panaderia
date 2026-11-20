@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 require_once("conexion.php");
 
 if (isset($_REQUEST['Guardar'])){

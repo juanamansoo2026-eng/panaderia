@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
     require_once("conexion.php");
     $registros= mysqli_query($conex,"SELECT id_categoria_gasto, nombre_categoria, baja FROM categoria_gasto ")
     or die ("problema en la consulta".mysqli_error($conex)); 

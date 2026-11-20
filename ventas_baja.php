@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $info_venta= strtoupper($_REQUEST["info_venta"]);
 $info_total= strtoupper($_REQUEST["info_total"]);
 $info_fecha= strtoupper($_REQUEST["info_fecha"]);

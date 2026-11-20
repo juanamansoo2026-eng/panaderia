@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['eliminar'])) { //pregunto si le llego la variable 
     $id_pedido_compra= $_REQUEST['id_pedido_compra']; //la cargamos en una variable
 

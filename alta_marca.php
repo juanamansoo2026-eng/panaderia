@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 
 if (isset($_REQUEST['enviar'])) { 
     $nombre_marca=$_REQUEST['nombre_marca'];     

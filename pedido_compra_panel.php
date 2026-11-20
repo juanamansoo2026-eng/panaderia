@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 require_once("conexion.php");
 $registros= mysqli_query($conex,"SELECT id_pedido_compra, pedido_compra.proveedor_id, proveedor.nombre, proveedor.apellido, materia_prima_id, materia_prima.nombre_mp, marca_pc, cantidad, pedido_compra.precio, total, fecha 
 FROM pedido_compra 

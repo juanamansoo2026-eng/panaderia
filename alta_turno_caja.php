@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['enviar'])) { 
     $empleado_id = $_REQUEST['id_empleado'];
     $turno = $_REQUEST['turno']; 

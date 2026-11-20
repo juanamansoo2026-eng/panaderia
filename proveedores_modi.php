@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['id_proveedor'])) {
     $id_proveedor = $_REQUEST['id_proveedor'];
     require_once("conexion.php");

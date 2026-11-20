@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $nombre_gasto= strtoupper($_REQUEST["nombre_gasto"]);
 $precio_gasto= strtoupper($_REQUEST["precio_gasto"]);
 $id_gasto= $_REQUEST["id_gasto"];

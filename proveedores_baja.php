@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $apeynom= strtoupper($_REQUEST["nomyape_prov"]);
 $id_proveedor= $_REQUEST["id_proveedor"];
 ?>

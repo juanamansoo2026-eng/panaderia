@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['enviar'])) { 
     $descripcion = $_REQUEST['descripcion'];
     $categoria_gasto_id = $_REQUEST['categoria_gasto_id'];

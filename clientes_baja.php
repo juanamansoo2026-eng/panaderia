@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $apeynom= strtoupper($_REQUEST["nomyape_cli"]);
 $id_cliente= $_REQUEST["id_cliente"];
 ?>

@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 include 'conexion.php';
 
 $registroExitoso = false;

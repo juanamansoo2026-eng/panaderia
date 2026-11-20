@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 require_once("conexion.php");
 $registros= mysqli_query($conex,"SELECT id_turno, empleado_id, empleados.nombre, empleados.apellido, turno, turno_caja.fecha_apertura, total_recaudado 
 FROM turno_caja 

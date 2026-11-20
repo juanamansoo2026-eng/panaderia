@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
     require_once("conexion.php");
     $registros= mysqli_query($conex,"SELECT id_gasto, turno_id, turno_caja.turno, gastos_administrativos.descripcion, categoria_gasto_id, nombre_categoria, monto, empleado, gastos_administrativos.fecha, gastos_administrativos.baja 
     FROM gastos_administrativos 

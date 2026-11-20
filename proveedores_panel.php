@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
     $fecha_actual = date('Y-m-d');
     require_once("conexion.php");
     $registros= mysqli_query($conex,"SELECT * FROM proveedor ")

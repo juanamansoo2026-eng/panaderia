@@ -1,3 +1,6 @@
+<?php
+require_once __DIR__ . '/auth.php';
+?>
 <?php 
     $fecha_actual = date('Y-m-d');
 

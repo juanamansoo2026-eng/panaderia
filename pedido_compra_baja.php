@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $nomyape_prov= strtoupper($_REQUEST["nomyape_prov"]);
 $id_pedido_compra= $_REQUEST["id_pedido_compra"];
 ?>

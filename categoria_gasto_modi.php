@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['id_categoria_gasto'])) {
     $id_categoria_gasto = $_REQUEST['id_categoria_gasto'];
     require_once("conexion.php"); //conexion a la bd

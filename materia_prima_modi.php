@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['id_materia_prima'])) {
     $id_materia_prima = $_REQUEST['id_materia_prima'];
     require_once("conexion.php"); //conexion a la bd

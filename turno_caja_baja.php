@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $nomyape_emple= strtoupper($_REQUEST["nomyape_emple"]);
 $id_turno= $_REQUEST["id_turno"];
 ?>

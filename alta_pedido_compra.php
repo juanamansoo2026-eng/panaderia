@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 if (isset($_REQUEST['enviar'])) { 
     $proveedor_id = $_REQUEST['id_proveedor'];
     $materia_prima_id = $_REQUEST['id_materia_prima'];

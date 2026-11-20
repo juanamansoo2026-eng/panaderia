@@ -1,4 +1,7 @@
-<?php session_start();
+<?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 include_once("conexion.php");
 
 $fecha_actual = date('Y-m-d H:i:s');

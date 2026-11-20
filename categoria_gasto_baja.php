@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $nombre_categoria= strtoupper($_REQUEST["nombre_categoria"]);
 $id_categoria_gasto= $_REQUEST["id_categoria_gasto"];
 ?>

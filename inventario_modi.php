@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $fecha_actual = date('Y-m-d');
 if (isset($_REQUEST['id_inventario'])) {
     $id_inventario = $_REQUEST['id_inventario'];

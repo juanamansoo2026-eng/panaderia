@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . '/auth.php';
+?>
+<?php
 $nombre= strtoupper($_REQUEST["nombre_mp"]);
 $id_materia_prima= $_REQUEST["id_materia_prima"];
 ?>
