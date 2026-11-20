@@ -11,18 +11,55 @@ if (isset($_REQUEST['enviar'])) {
 
     if ($resultado_alta) { // crea un if para verificar si la consulta se ejecutó correctamente
         $marca_grabado= mysqli_insert_id($conex); 
-        echo '<h2>La Marca de la Materia Prima:</h2> ' . "<b>" . $nombre_marca . "</b>" . 
-        '<br> <h2>Se guardó correctamente.</h2>'; // Muestra un mensaje confirmando que el registro se guardó y muestra el ID del registro con el que se grabo
-        ?>
-        <form action="marca_panel.php">
-            <input type="submit" value="Continuar">
-        </form>
+    ?>
+    <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Marca guardada - Panadería M</title>
+            <link rel="stylesheet" href="css/panaderia-moderna.css">
+        </head>
+        <body>
+            <?php include("menu.php"); ?>
+            <main class="container form-container resultado-container">
+                <h2>Marca registrada</h2>
+                <div class="mensaje exito" role="status">
+                    <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+                    La marca se guardó correctamente.
+                </div>
+                <div class="resultado-acciones">
+                    <a class="button" href="marca_panel.php">Continuar</a>
+                </div>
+            </main>
+            <?php include("footer.php"); ?>
+        </body>
+        </html>
         <?php
-    
     } else {
-        echo 'error en el proceso';
+        ?>
+        <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Error al guardar la marca - Panadería M</title>
+                <link rel="stylesheet" href="css/panaderia-moderna.css">
+            </head>
+            <body>
+                <?php include("menu.php"); ?>
+                <main class="container form-container resultado-container">
+                    <h2>No se pudo registrar la marca</h2>
+                    <div class="mensaje error" role="alert">Ocurrió un error durante el proceso. Revisá los datos e intentá nuevamente.</div>
+                    <div class="resultado-acciones">
+                        <a class="button button-outline" href="marca_alta.php">Volver al formulario</a>
+                    </div>
+                </main>
+                <?php include("footer.php"); ?>
+            </body>
+            </html>
+            <?php
     }
-    mysqli_close($conex);
 }
 
 ?>

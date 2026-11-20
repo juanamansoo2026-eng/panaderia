@@ -1,15 +1,17 @@
-<?php
+<?php session_start();
 include_once("conexion.php");
 
-$fecha_actual = date('Y-m-d'); 
+$fecha_actual = date('Y-m-d H:i:s');
 
 $clientes_query = "SELECT id_cliente, nombre, apellido FROM clientes";
-$empleados_query = "SELECT id_empleado, nombre, apellido FROM empleados";
+$empleados_query = "SELECT id_empleado, nombre, apellido, username FROM empleados";
 $productos_query = "SELECT id_producto, nombre, precio FROM productos";
 
 $clientes_result = $conex->query($clientes_query);
 $empleados_result = $conex->query($empleados_query);
 $productos_result = $conex->query($productos_query);
+
+$username = isset($_SESSION['username']) ? htmlspecialchars((string) $_SESSION['username'], ENT_QUOTES, 'UTF-8') : '';
 
 // Pre-fetch product options HTML so JavaScript clones work smoothly
 $product_options = '<option value="">Seleccione un producto</option>';
@@ -42,22 +44,25 @@ while ($row_producto = $productos_result->fetch_assoc()) {
                 </div>
 
                 <div>
-                    <label for="empleado_id">Empleado:</label>
-                    <label>
-                    <select name="empleado_id" id="empleado_id" required>
-                        <option value="">Seleccione un empleado</option>
-                        <?php while ($row_empleado = $empleados_result->fetch_assoc()) { ?>
-                            <option value="<?= $row_empleado['id_empleado'] ?>"><?= htmlspecialchars($row_empleado['nombre'] . " " . $row_empleado['apellido']) ?></option>
-                        <?php } ?>
-                    </select>
+                    <label>Empleado:</label>
+                    <?php
+                    $emp = $conex->query("SELECT id_empleado FROM empleados WHERE username = '" . $conex->real_escape_string($_SESSION['username']) . "'")->fetch_assoc();
+                    ?>
+                    <div style="padding:11px 16px; background:#F0E6D8; border-radius:8px; font-weight:600;"><?= htmlspecialchars($_SESSION['username']) ?></div>
+                    <textarea name="empleado_id" hidden><?= $emp['id_empleado'] ?></textarea>
                 </div>
+
 
                 <div>
                     <label for="cliente_id">Cliente:</label>
                     <select name="cliente_id" id="cliente_id" required>
-                        <option value="">Seleccione un cliente</option>
                         <?php while ($row_cliente = $clientes_result->fetch_assoc()) { ?>
-                            <option value="<?= $row_cliente['id_cliente'] ?>"><?= htmlspecialchars($row_cliente['nombre'] . " " . $row_cliente['apellido']) ?></option>
+                            <option 
+                                value="<?= $row_cliente['id_cliente'] ?>"
+                                <?= ($row_cliente['nombre'] == 'Consumidor Final') ? 'selected' : '' ?>
+                            >
+                                <?= htmlspecialchars($row_cliente['nombre'] . " " . $row_cliente['apellido']) ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
@@ -112,10 +117,10 @@ while ($row_producto = $productos_result->fetch_assoc()) {
             </table>
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 25px;">
-                <button type="button" id="agregarProducto" class="button-outline">➕ Agregar Otro Producto</button>
+                <button type="button" id="agregarProducto" class="button-outline"><svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="12" r="10" stroke="#B85C28" stroke-width="1.5"></circle> <path d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15" stroke="#B85C28" stroke-width="1.5" stroke-linecap="round"></path></g></svg>  Agregar Otro Producto</button>
                 <div>
                     <button type="submit" name="enviar"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H3V3zM7 3v6h10V3M7 21v-8h10v8"/></svg>Confirmar Venta</button>
-                    <a class="button button-outline" href="ventas_panel.php">❌ Cancelar</a>
+                    <a class="button button-outline" href="ventas_panel.php"><svg width="25px" height="25px" fill="#B85C28" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#B85C28"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>cancel1</title> <path d="M16 29c-7.18 0-13-5.82-13-13s5.82-13 13-13 13 5.82 13 13-5.82 13-13 13zM16 6c-5.522 0-10 4.478-10 10s4.478 10 10 10c5.523 0 10-4.478 10-10s-4.477-10-10-10zM20.537 19.535l-1.014 1.014c-0.186 0.186-0.488 0.186-0.675 0l-2.87-2.87-2.87 2.87c-0.187 0.186-0.488 0.186-0.675 0l-1.014-1.014c-0.186-0.186-0.186-0.488 0-0.675l2.871-2.869-2.871-2.87c-0.186-0.187-0.186-0.489 0-0.676l1.014-1.013c0.187-0.187 0.488-0.187 0.675 0l2.87 2.87 2.87-2.87c0.187-0.187 0.489-0.187 0.675 0l1.014 1.013c0.186 0.187 0.186 0.489 0 0.676l-2.871 2.87 2.871 2.869c0.186 0.187 0.186 0.49 0 0.675z"></path> </g></svg>Cancelar</a>
                 </div>
             </div>
         </form>

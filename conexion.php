@@ -1,4 +1,5 @@
 <?php
+    date_default_timezone_set('America/Argentina/Buenos_Aires');
     $servidor= "localhost"; // el servidor del xampp es "localhost"
     $usuario= "root"; // En xampp, el usuario por defecto es 'root'.
     $pass= ""; // la contraseña para conectarse a la base de datos, en este caso hacemos la bd sin contraseñas

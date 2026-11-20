@@ -4,30 +4,68 @@ if (isset($_REQUEST['enviar'])) {
     $nombre=$_REQUEST['nombre'];
     $apellido=$_REQUEST['apellido']; 
     $telefono=$_REQUEST['telefono'];
-    $descripcion=$_REQUEST['descripcion'];
+    $razon_social=$_REQUEST['razon_social'];
+    $cuil=$_REQUEST['cuil'];
+    $provincia=$_REQUEST['provincia'];
+    $descripcion=$_REQUEST['descripcion'];    
 
     require_once("conexion.php"); 
     mysqli_query($conex,"SET NAMES 'UTF8'");
 
-    $resultado_alta= mysqli_query($conex,"INSERT INTO proveedor (nombre, apellido, telefono, descripcion) 
-    VALUE ('$nombre','$apellido','$telefono','$descripcion')");
+    $resultado_alta= mysqli_query($conex,"INSERT INTO proveedor (nombre, apellido, telefono, razon_social, cuil, provincia, descripcion) 
+    VALUE ('$nombre','$apellido','$telefono','$razon_social','$cuil','$provincia','$descripcion')");
 
     if ($resultado_alta) { // crea un if para verificar si la consulta se ejecutó correctamente
         $id_grabado= mysqli_insert_id($conex); // Obtiene el ID del último registro insertado en la base de datos, osea el que acabamos de agregar
-        echo '<h2>El proveedor:</h2> ' . "<b>" . $nombre . " " . $apellido . "</b>" . 
-        '<br> <h2>Telefono:</h2> ' . "<b>" . $telefono . "</b>" . 
-        '<br> <h2>Vende: </h2>' . "<b>" . $descripcion . "</b>" .  
-        '<br> <h2>Se guardó correctamente.</h2>'; // Muestra un mensaje confirmando que el registro se guardó y muestra el ID del registro con el que se grabo
-        ?>
-        <form action="proveedores_panel.php">
-            <input type="submit" value="Continuar">
-        </form>
+    ?>
+    <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Proveedor guardado - Panadería M</title>
+            <link rel="stylesheet" href="css/panaderia-moderna.css">
+        </head>
+        <body>
+            <?php include("menu.php"); ?>
+            <main class="container form-container resultado-container">
+                <h2>Proveedor registrado</h2>
+                <div class="mensaje exito" role="status">
+                    <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+                    El proveedor se guardó correctamente.
+                </div>
+                <div class="resultado-acciones">
+                    <a class="button" href="proveedores_panel.php">Continuar</a>
+                </div>
+            </main>
+            <?php include("footer.php"); ?>
+        </body>
+        </html>
         <?php
-    
     } else {
-        echo 'error en el proceso';
+        ?>
+        <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Error al guardar el proveedor - Panadería M</title>
+                <link rel="stylesheet" href="css/panaderia-moderna.css">
+            </head>
+            <body>
+                <?php include("menu.php"); ?>
+                <main class="container form-container resultado-container">
+                    <h2>No se pudo registrar el proveedor</h2>
+                    <div class="mensaje error" role="alert">Ocurrió un error durante el proceso. Revisá los datos e intentá nuevamente.</div>
+                    <div class="resultado-acciones">
+                        <a class="button button-outline" href="proveedores_alta.php">Volver al formulario</a>
+                    </div>
+                </main>
+                <?php include("footer.php"); ?>
+            </body>
+            </html>
+            <?php
     }
-    mysqli_close($conex);
 }
 
 ?>

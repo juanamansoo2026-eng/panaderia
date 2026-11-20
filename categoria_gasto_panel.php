@@ -1,6 +1,6 @@
 <?php
     require_once("conexion.php");
-    $registros= mysqli_query($conex,"SELECT id_categoria_gasto, nombre_categoria FROM categoria_gasto ")
+    $registros= mysqli_query($conex,"SELECT id_categoria_gasto, nombre_categoria, baja FROM categoria_gasto ")
     or die ("problema en la consulta".mysqli_error($conex)); 
     mysqli_close($conex);
 ?>
@@ -34,7 +34,8 @@
                 <tr>
                     <th>ID Categoría</th>
                     <th>Nombre Categoría</th>
-                    <th colspan="2">Acciones</th>
+                    <th>Baja</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +43,7 @@
                 <tr>   
                     <td align="center"><?php echo htmlspecialchars($row_registros['id_categoria_gasto']);?></td> 
                     <td><strong><?php echo htmlspecialchars($row_registros['nombre_categoria']);?></strong></td>
+                    <td align="center"><?php echo htmlspecialchars($row_registros['baja']);?></td>
                     <td align="center">
                         <form action="categoria_gasto_modi.php" method="post">
                             <input type="hidden" name="id_categoria_gasto" value="<?php echo $row_registros['id_categoria_gasto'];?>">

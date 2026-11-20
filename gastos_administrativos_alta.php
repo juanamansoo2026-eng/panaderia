@@ -17,65 +17,66 @@
 <body>
     <?php include("menu.php"); ?>
     <div class="container form-container" style="width: 600px">
-    <h2 style="text-align: center">Alta Gastos Administrativos - Panadería M</h2>
-    <form action="alta_gastos_administrativos.php" method="post" autocomplete="off" required>
-        
-        <label>Descripcion:</label>
-        <input type="text" name="descripcion" maxlength="100" required>
-        <br>
+        <h2 style="text-align: center">Alta Gastos Administrativos - Panadería M</h2>
+        <form action="alta_gastos_administrativos.php" method="post" autocomplete="off" required>
+            
+            <label>Descripcion:</label>
+            <input type="text" name="descripcion" maxlength="100" required>
+            <br>
 
-        <label>Categoría:</label>
-        <select name="categoria_gasto_id" required>
-            <?php
-                include_once ('conexion.php'); 
-                $resultado = mysqli_query($conex,"SELECT id_categoria_gasto, nombre_categoria FROM categoria_gasto GROUP BY nombre_categoria"); 
-            ?>
-            <option value="">Seleccione..</option>
-            <?php
-                while ($row = mysqli_fetch_assoc($resultado)) { ?> 
-                    <option value="<?php echo $row['id_categoria_gasto'];?>"> <?php echo $row['nombre_categoria'];?></option> 
-            <?php } ?>
-        </select>
-        <br>
+            <label>Categoría:</label>
+            <select name="categoria_gasto_id" required>
+                <?php
+                    include_once ('conexion.php'); 
+                    $resultado = mysqli_query($conex,"SELECT id_categoria_gasto, nombre_categoria FROM categoria_gasto GROUP BY nombre_categoria"); 
+                ?>
+                <option value="">Seleccione..</option>
+                <?php
+                    while ($row = mysqli_fetch_assoc($resultado)) { ?> 
+                        <option value="<?php echo $row['id_categoria_gasto'];?>"> <?php echo $row['nombre_categoria'];?></option> 
+                <?php } ?>
+            </select>
+            <br>
 
-        <label>Monto:</label>
-        <input type="number" step="0.01" name="monto" required>
-        <br>
+            <label>Monto:</label>
+            <input type="number" step="0.01" name="monto" required>
+            <br>
 
-        <label>Turno:</label>
-        <select name="turno_id" id="turno" onchange="actualizarEmpleado()" required>
-            <?php
-            include_once ('conexion.php');
-            $resultado = mysqli_query($conex, "SELECT turno_caja.id_turno, turno_caja.turno, empleados.nombre, empleados.apellido
-                                                FROM turno_caja
-                                                INNER JOIN empleados ON turno_caja.empleado_id = empleados.id_empleado
-                                                ORDER BY turno");
-            ?>
-            <option value="">Seleccione un Turno</option>
-            <?php
-            while ($row = mysqli_fetch_assoc($resultado)) { ?>
-                <option value="<?php echo $row['id_turno']; ?>" data-empleado="<?php echo $row['nombre'] . ' ' . $row['apellido']; ?>">
-                    <?php echo $row['turno'] . " - " . $row['nombre'] . " " . $row['apellido']; ?>
-                </option>
-            <?php
-            }
-            ?>
-        </select>
-        <br>
+            <label>Turno:</label>
+            <select name="turno_id" id="turno" onchange="actualizarEmpleado()" required>
+                <?php
+                include_once ('conexion.php');
+                $resultado = mysqli_query($conex, "SELECT turno_caja.id_turno, turno_caja.turno, empleados.nombre, empleados.apellido
+                                                    FROM turno_caja
+                                                    INNER JOIN empleados ON turno_caja.empleado_id = empleados.id_empleado
+                                                    ORDER BY turno");
+                ?>
+                <option value="">Seleccione un Turno</option>
+                <?php
+                while ($row = mysqli_fetch_assoc($resultado)) { ?>
+                    <option value="<?php echo $row['id_turno']; ?>" data-empleado="<?php echo $row['nombre'] . ' ' . $row['apellido']; ?>">
+                        <?php echo $row['turno'] . " - " . $row['nombre'] . " " . $row['apellido']; ?>
+                    </option>
+                <?php
+                }
+                ?>
+            </select>
+            <br>
 
-        <label>Empleado:</label>
-        <input type="text" name="empleado" id="empleado" readonly>
-        <br>
+            <label>Empleado:</label>
+            <input type="text" name="empleado" id="empleado" readonly>
+            <br>
 
-        <label>Fecha Pago:</label>
-        <input type="date" name="fecha" required>
-        <br>
+            <label>Fecha Pago:</label>
+            <input type="date" name="fecha" required>
+            <br>
 
-        <input type="submit" name="enviar" value="Grabar">
-        <input type="submit" value="Cancelar" form="volver">
-    </form>
-    <form action="gastos_administrativos_panel.php" id="volver" method="post"></form>
-        </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" name="enviar"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H3V3zM7 3v6h10V3M7 21v-8h10v8"/></svg>Guardar</button>
+                <a class="button button-outline" href="gastos_administrativos_panel.php">Cancelar</a>
+            </div>        
+        </form>
+    </div>
     <?php include("footer.php"); ?>
 </body>
 </html>

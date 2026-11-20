@@ -420,6 +420,20 @@ input:focus, select:focus, textarea:focus {
     margin-top: 15px;
 }
 
+.div-filtros {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+    gap: 30px;
+}
+
+/* .div-filtros button {
+    align-items: center;
+    justify-content: center;
+} */
+
 /* b1 {
     display: flex;
     flex-direction: row;

@@ -7,8 +7,76 @@ INNER JOIN clientes ON clientes.id_cliente = ventas.cliente_id
 INNER JOIN empleados ON empleados.id_empleado = ventas.empleado_id
 ORDER BY id_venta")
 or die ("problema en la consulta".mysqli_error($conex));
+
+// Recibir filtros
+$buscar_cliente = isset($_GET['buscar_cliente'])
+    ? trim($_GET['buscar_cliente']) : '';
+
+$fecha_desde = isset($_GET['fecha_desde'])
+    ? $_GET['fecha_desde'] : '';
+
+$fecha_hasta = isset($_GET['fecha_hasta'])
+    ? $_GET['fecha_hasta'] : '';
+
+// Validar fechas
+function validarFecha($fecha) {
+    $d = DateTime::createFromFormat('!Y-m-d', $fecha);
+    return ($d && $d->format('Y-m-d') === $fecha) ? $fecha : '';
+}
+
+$fecha_desde = validarFecha($fecha_desde);
+$fecha_hasta = validarFecha($fecha_hasta);
+
+// Construir consulta
+$sql = "SELECT 
+            id_venta,
+            cliente_id,
+            empleado_id,
+            clientes.nombre AS c_nombre,
+            clientes.apellido AS c_apellido,
+            empleados.nombre AS e_nombre,
+            empleados.apellido AS e_apellido,
+            subtotal,
+            descuento,
+            total,
+            forma_pago,
+            fecha
+        FROM ventas
+        INNER JOIN clientes
+            ON clientes.id_cliente = ventas.cliente_id
+        INNER JOIN empleados
+            ON empleados.id_empleado = ventas.empleado_id
+        WHERE 1=1";
+
+// Filtro por nombre o apellido del cliente
+if ($buscar_cliente !== '') {
+    $buscar = mysqli_real_escape_string($conex, $buscar_cliente);
+
+    $sql .= " AND CONCAT(clientes.nombre, ' ', clientes.apellido)
+              LIKE '%$buscar%'";
+}
+
+// Filtro desde una fecha
+if ($fecha_desde !== '') {
+    $desde = mysqli_real_escape_string($conex, $fecha_desde);
+    $sql .= " AND DATE(ventas.fecha) >= '$desde'";
+}
+
+// Filtro hasta una fecha
+if ($fecha_hasta !== '') {
+    $hasta = mysqli_real_escape_string($conex, $fecha_hasta);
+    $sql .= " AND DATE(ventas.fecha) <= '$hasta'";
+}
+
+// Ordenar ventas
+$sql .= " ORDER BY id_venta DESC";
+
+$registros = mysqli_query($conex, $sql)
+    or die("Problema en la consulta: " . mysqli_error($conex));
+
 mysqli_close($conex);
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -23,6 +91,47 @@ mysqli_close($conex);
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Historial de Ventas - Panadería M</h2>
+
+<form method="GET" action="" class="div-filtros">
+
+    <div>
+        <label for="buscar_cliente">Buscar cliente:</label>
+        <input
+            type="text"
+            name="buscar_cliente"
+            id="buscar_cliente"
+            placeholder="Nombre o apellido..."
+            value="<?= htmlspecialchars($buscar_cliente) ?>"
+        >
+    </div>
+
+    <div>
+        <label for="fecha_desde">Desde:</label>
+        <input
+            type="date"
+            name="fecha_desde"
+            id="fecha_desde"
+            value="<?= htmlspecialchars($fecha_desde) ?>"
+        >
+    </div>
+
+    <div>
+        <label for="fecha_hasta">Hasta:</label>
+        <input
+            type="date"
+            name="fecha_hasta"
+            id="fecha_hasta"
+            value="<?= htmlspecialchars($fecha_hasta) ?>"
+        >
+    </div>
+
+    <div>
+        <button type="submit">Buscar / Filtrar</button>
+        <a href="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="button button-outline">Limpiar</a>
+    </div>
+
+</form>
+
             <div class="div-mayor">
                 <div class="b1">
                     <a class="button" href="ventas_alta.php">Nueva Venta</a>
@@ -66,15 +175,6 @@ mysqli_close($conex);
                             <input type="image" name="editar" src="img/pdf.png" width="22" title="Imprimir PDF / Detalles">
                         </form>
                     </td>
-                    <!-- <td align="center">
-                        <form action="ventas_baja.php" method="post">
-                            <input type="hidden" name="id_venta" value="<?php echo $row_registros['id_venta']; ?>">
-                            <input type="hidden" name="info_venta" value="<?php echo htmlspecialchars($row_registros['c_nombre'] . ' ' . $row_registros['c_apellido'])?>">
-                            <input type="hidden" name="info_total" value="<?php echo $row_registros['total']?>">
-                            <input type="hidden" name="info_fecha" value="<?php echo $row_registros['fecha']?>">
-                            <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar Venta">
-                        </form>
-                    </td> -->
                 </tr>
             <?php } ?>
             </tbody>

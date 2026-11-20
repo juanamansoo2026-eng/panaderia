@@ -125,6 +125,13 @@ if (!isset($_SESSION['username'])) {
                 <p>Control de gastos administrativos y categorías</p>
                 <a class="button" href="gastos_administrativos_panel.php">Ver Gastos</a>
             </div>
+
+            <div class="dashboard-card">
+                <div class="icon-badge"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15 8.5c-.7-.6-1.7-1-3-1-1.7 0-3 .8-3 2s1.3 2 3 2 3 .8 3 2-1.3 2-3 2c-1.3 0-2.3-.4-3-1M12 6v12"/></svg></div>
+                <h3>Gastos</h3>
+                <p>Control de gastos administrativos y categorías</p>
+                <a class="button" href="turno_caja_panel.php">Ver Gastos</a>
+            </div>
         </div>
 
         <div style="margin-top: 35px;">

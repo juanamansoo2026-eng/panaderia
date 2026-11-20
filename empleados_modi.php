@@ -124,8 +124,10 @@ if (isset($_POST['Guardar'])) {
             <br>
 
             <!-- Botones -->
-            <input type="submit" name="Guardar" value="Guardar">
-            <input type="submit" value="Cancelar" form="volver">
+            <div style="text-align: center; margin-top: 20px;">
+                <button type="submit" name="Guardar"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H3V3zM7 3v6h10V3M7 21v-8h10v8"/></svg>Guardar Cambios</button>
+                <a class="button button-outline" href="empleados_panel.php">Cancelar</a>
+            </div>
         </form>
     </div>
 

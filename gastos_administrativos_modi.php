@@ -89,13 +89,14 @@ if (isset($_REQUEST['id_gasto'])) {
         <br>
 
         <label>Fecha Pago:</label>
-        <input type="date" name="fecha" value="<?php echo $row_registro['fecha']; ?>" required>
+        <input type="datetime" name="fecha" value="<?php echo $row_registro['fecha']; ?>" required>
         <br>
 
-        <input type="submit" name="enviar" value="Grabar">
-        <input type="submit" value="Cancelar" form="volver">
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" name="enviar"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H3V3zM7 3v6h10V3M7 21v-8h10v8"/></svg>Guardar</button>
+            <a class="button button-outline" href="gastos_administrativos_panel.php">Cancelar</a>
+        </div>
     </form>
-    <form action="gastos_administrativos_panel.php" id="volver" method="post"></form>
         </div>
     <?php include("footer.php"); ?>
 </body>

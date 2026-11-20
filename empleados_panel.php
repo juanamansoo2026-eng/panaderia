@@ -8,6 +8,49 @@
     WHERE baja = '1'
     ORDER BY empleados.id_empleado ASC")
         or die("Problema en la consulta: " . mysqli_error($conex));
+
+    // RECIBIR FILTROS
+    $nombre = isset($_GET['nombre']) ? trim($_GET['nombre']) : '';
+    $apellido = isset($_GET['apellido']) ? trim($_GET['apellido']) : '';
+    $rol = isset($_GET['rol']) ? trim($_GET['rol']) : '';
+
+    // CONSULTA DE ROLES
+    $roles = mysqli_query($conex, "SELECT id_rol, nombre_rol
+                                FROM roles
+                                ORDER BY nombre_rol ASC")
+        or die("Problema al consultar roles: " . mysqli_error($conex));
+
+    // CONSULTA BASE
+    $sql = "SELECT empleados.*, roles.nombre_rol
+            FROM empleados
+            INNER JOIN roles ON roles.id_rol = empleados.id_rol
+            WHERE empleados.baja = '1'";
+
+    // FILTRO POR NOMBRE
+    if ($nombre != '') {
+        $nombre_sql = mysqli_real_escape_string($conex, $nombre);
+        $sql .= " AND empleados.nombre LIKE '$nombre_sql%'";
+    }
+
+    // FILTRO POR APELLIDO
+    if ($apellido != '') {
+        $apellido_sql = mysqli_real_escape_string($conex, $apellido);
+        $sql .= " AND empleados.apellido LIKE '$apellido_sql%'";
+    }
+
+    // FILTRO POR ROL
+    if ($rol != '' && ctype_digit($rol)) {
+        $rol_sql = (int)$rol;
+        $sql .= " AND empleados.id_rol = $rol_sql";
+    }
+
+    // ORDENAR RESULTADOS
+    $sql .= " ORDER BY empleados.id_empleado ASC";
+
+    // EJECUTAR CONSULTA
+    $registros = mysqli_query($conex, $sql)
+        or die("Problema en la consulta: " . mysqli_error($conex));
+        
     mysqli_close($conex);
 ?>
 
@@ -26,6 +69,16 @@
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // function actualizarBaja(id_empleado, baja) {
+        //     $.ajax({
+        //         url: 'actualizar_baja.php',
+        //         type: 'POST',
+        //         data: {
+        //             id_empleado: id_empleado,
+        //             baja: baja
+        //         }
+        //     });
+        // }
         function actualizarBaja(id_empleado, baja) {
             $.ajax({
                 url: 'actualizar_baja.php',
@@ -33,6 +86,12 @@
                 data: {
                     id_empleado: id_empleado,
                     baja: baja
+                },
+                success: function(respuesta) {
+                    location.reload();
+                },
+                error: function() {
+                    alert('Error al actualizar el estado del empleado.');
                 }
             });
         }
@@ -44,6 +103,73 @@
     <div class="table-container">
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Lista de Empleados - Panadería M</h2>
+
+        <!-- DIV DE FILTROS -->
+        <div>
+            <form method="GET" action="empleados_panel.php">
+
+                <div class="div-filtros">
+
+                    <!-- BUSCAR POR NOMBRE -->
+                    <div>
+                        <label for="nombre">Buscar Empleado:</label>
+                        <input
+                            type="text"
+                            name="nombre"
+                            id="nombre"
+                            placeholder="Buscar nombre..."
+                            value="<?php echo htmlspecialchars($nombre); ?>"
+                        >
+                    </div>
+
+                    <!-- BUSCAR POR APELLIDO -->
+                    <div>
+                        <label for="apellido">Buscar Empleado:</label>
+                        <input
+                            type="text"
+                            name="apellido"
+                            id="apellido"
+                            placeholder="Buscar apellido..."
+                            value="<?php echo htmlspecialchars($apellido); ?>"
+                        >
+                    </div>
+
+                    <!-- FILTRAR POR ROL -->
+                    <div>
+                        <label for="rol">Rol:</label>
+                        <select name="rol" id="rol">
+
+                            <option value="">Todos los roles</option>
+
+                            <?php while ($row_rol = mysqli_fetch_assoc($roles)) { ?>
+
+                                <option
+                                    value="<?php echo $row_rol['id_rol']; ?>"
+                                    <?php echo ($rol == $row_rol['id_rol']) ? 'selected' : ''; ?>
+                                >
+                                    <?php echo htmlspecialchars($row_rol['nombre_rol']); ?>
+                                </option>
+
+                            <?php } ?>
+
+                        </select>
+                    </div>
+
+                    <!-- BOTONES -->
+                    <div style="padding-bottom: unset; padding-top: 30px;">
+                        <button type="submit" class="button">
+                            FILTRAR
+                        </button>
+
+                        <a href="empleados_panel.php" class="button button-outline">
+                            LIMPIAR
+                        </a>
+                    </div>
+
+                </div>
+            </form>
+        </div>            
+            
             <div class="div-mayor">
                 <div class="b1">
                     <a class="button" href="nuevo_emple.php">Nuevo Empleado</a>        

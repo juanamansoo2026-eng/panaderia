@@ -28,7 +28,7 @@ mysqli_close($conex);
                 </div>
 
                 <div class="b1">
-                    <a class="button button-outline" href="gastos_administrativos_panel.php">Volver</a>
+                    <a class="button button-outline" href="proveedores_panel.php">Volver</a>
                 </div>
             </div>
         </div>

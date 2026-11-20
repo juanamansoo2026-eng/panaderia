@@ -1,6 +1,6 @@
 <?php
 require_once("conexion.php");
-$registros= mysqli_query($conex,"SELECT id_turno, empleado_id, empleados.nombre, empleados.apellido, turno, turno_caja.fecha, total_recaudado 
+$registros= mysqli_query($conex,"SELECT id_turno, empleado_id, empleados.nombre, empleados.apellido, turno, turno_caja.fecha_apertura, total_recaudado 
 FROM turno_caja 
 INNER JOIN empleados ON empleados.id_empleado = turno_caja.empleado_id")
 or die ("problema en la consulta".mysqli_error($conex));
@@ -37,7 +37,7 @@ mysqli_close($conex);
                     <th>ID Turno</th>
                     <th>Empleado</th>
                     <th>Turno</th>
-                    <th>Fecha</th>
+                    <th>Fecha Apertura</th>
                     <th>Total Recaudado</th>
                     <th colspan="2">Acciones</th>
                 </tr>
@@ -48,7 +48,7 @@ mysqli_close($conex);
                     <td><?php echo htmlspecialchars($row_registros['id_turno']);?></td> 
                     <td><strong><?php echo htmlspecialchars($row_registros['nombre'] . ' ' . $row_registros['apellido']);?></strong></td>
                     <td><span class="bakery-badge"><?php echo htmlspecialchars($row_registros['turno']);?></span></td>
-                    <td><?php echo htmlspecialchars($row_registros['fecha']);?></td>
+                    <td><?php echo htmlspecialchars($row_registros['fecha_apertura']);?></td>
                     <td><strong style="color:var(--bakery-primary);">$<?php echo number_format($row_registros['total_recaudado'], 2, ',', '.');?></strong></td>
                     <td align="center">
                         <form action="turno_caja_modi.php" method="post">
