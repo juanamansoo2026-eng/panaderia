@@ -6,6 +6,27 @@ if (($pathSegments[0] ?? '') === basename(__DIR__)) {
 }
 $prefix = str_repeat('../', count($pathSegments));
 $username = isset($_SESSION['username']) ? htmlspecialchars((string) $_SESSION['username'], ENT_QUOTES, 'UTF-8') : '';
+$role = isset($_SESSION['role']) ? (string) $_SESSION['role'] : '';
+
+if ($role === '' && isset($_SESSION['username'])) {
+    include_once __DIR__ . '/conexion.php';
+    $stmt = $conex->prepare(
+        "SELECT roles.nombre_rol
+         FROM empleados
+         INNER JOIN roles ON roles.id_rol = empleados.id_rol
+         WHERE empleados.username = ? AND empleados.baja = 1"
+    );
+    $stmt->bind_param('s', $_SESSION['username']);
+    $stmt->execute();
+    $stmt->bind_result($roleName);
+    if ($stmt->fetch()) {
+        $_SESSION['role'] = $roleName;
+        $role = (string) $roleName;
+    }
+    $stmt->close();
+}
+
+$role = htmlspecialchars($role, ENT_QUOTES, 'UTF-8');
 ?>
 <link rel="stylesheet" href="<?php echo $prefix; ?>css/menu.css">
 <nav class="nav-class" aria-label="Navegaci&oacute;n principal">
@@ -26,7 +47,12 @@ $username = isset($_SESSION['username']) ? htmlspecialchars((string) $_SESSION['
         </ul>
     </section>
     <div class="nav-user">
-        <?php if ($username !== ''): ?><span><?php echo $username; ?></span><?php endif; ?>
+        <?php if ($username !== ''): ?>
+            <div class="nav-user-identity">
+                <?php if ($role !== ''): ?><span class="nav-user-role">Rol: <?php echo $role; ?></span><?php endif; ?>
+                <span class="nav-user-name">Usuario: <?php echo $username; ?></span>
+            </div>
+        <?php endif; ?>
         <a class="link" href="<?php echo $prefix; ?>cerrar.php">Cerrar Sesi&oacute;n</a>
     </div>
 </nav>

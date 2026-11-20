@@ -23,7 +23,10 @@ function loginUsuario($username, $password) {
     global $conex;
 
     $stmt = $conex->prepare(
-        "SELECT password FROM empleados WHERE username = ? AND baja = 1"
+        "SELECT empleados.password, roles.nombre_rol
+         FROM empleados
+         INNER JOIN roles ON roles.id_rol = empleados.id_rol
+         WHERE empleados.username = ? AND empleados.baja = 1"
     );
 
     $stmt->bind_param("s", $username);
@@ -32,12 +35,13 @@ function loginUsuario($username, $password) {
 
     if ($stmt->num_rows > 0) {
 
-        $stmt->bind_result($hashedPassword);
+        $stmt->bind_result($hashedPassword, $roleName);
         $stmt->fetch();
 
         if (password_verify($password, $hashedPassword)) {
 
             $_SESSION['username'] = $username;
+            $_SESSION['role'] = $roleName;
 
             header("Location: page1.php");
             exit();
