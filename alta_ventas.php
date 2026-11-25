@@ -16,9 +16,19 @@ if (isset($_REQUEST['enviar'])) {
     require_once("conexion.php"); 
     mysqli_query($conex,"SET NAMES 'UTF8'");
 
+    // BUSCAR LA CAJA DE VENTAS ABIERTA: la venta queda asociada a esa caja
+    require_once("caja_funciones.php");
+    $caja_abierta = cajaAbierta($conex);
+    if (!$caja_abierta) {
+        mysqli_close($conex);
+        header('location: ventas_alta.php'); // muestra el aviso para abrir la caja
+        exit();
+    }
+    $turno_id = (int)$caja_abierta['id_turno'];
+
     // INSERTAR REGISTRO DE LA VENTA EN LA TABLA "VENTAS"
-    $insertVentas = mysqli_query($conex,"INSERT INTO ventas (cliente_id, empleado_id, subtotal, descuento, total, forma_pago, fecha) 
-    VALUES ('$cliente_id', '$empleado_id', '$subtotal', '$descuento', '$total', '$forma_pago', '$fecha')") or die ("problema en la consulta".mysqli_error($conex));
+    $insertVentas = mysqli_query($conex,"INSERT INTO ventas (cliente_id, empleado_id, turno_id, subtotal, descuento, total, forma_pago, fecha) 
+    VALUES ('$cliente_id', '$empleado_id', '$turno_id', '$subtotal', '$descuento', '$total', '$forma_pago', '$fecha')") or die ("problema en la consulta".mysqli_error($conex));
 
     // Si la consulta se realiza con éxito la variable $insertVentas se carga con valor TRUE
     if ($insertVentas) {

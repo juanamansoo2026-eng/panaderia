@@ -22,6 +22,7 @@ $username = isset($_SESSION['username']) ? htmlspecialchars((string) $_SESSION['
             <li class="li-links"><a class="link" href="<?php echo $prefix; ?>productos_panel.php">Productos</a></li>
             <li class="li-links"><a class="link" href="<?php echo $prefix; ?>gastos_administrativos_panel.php">Gastos Administrativos</a></li>
             <li class="li-links"><a class="link" href="<?php echo $prefix; ?>ventas_panel.php">Ventas</a></li>
+            <li class="li-links"><a class="link" href="<?php echo $prefix; ?>turno_caja_panel.php">Caja</a></li>
             <li class="li-links"><a class="link" href="<?php echo $prefix; ?>inventario_panel.php">Inventario</a></li>
         </ul>
     </section>

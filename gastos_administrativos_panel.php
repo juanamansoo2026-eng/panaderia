@@ -172,6 +172,7 @@ require_once __DIR__ . '/auth.php';
             <div class="div-mayor">
                 <div class="b1">
                     <a class="button" href="gastos_administrativos_alta.php">Nuevo Gasto</a>
+                    <a class="button" href="turno_caja_panel.php">Caja</a>
                     <a class="button" href="categoria_gasto_panel.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M20 13 13 20 4 11V4h7z"/><circle cx="8" cy="8" r="1"/></svg> Categorías de Gastos</a>
                 </div>
 
@@ -188,7 +189,7 @@ require_once __DIR__ . '/auth.php';
                     <th>Descripción</th>
                     <th>Categoría</th>
                     <th>Monto</th>
-                    <th>Turno</th>
+                    <th>Caja</th>
                     <th>Empleado</th>
                     <th>Fecha</th>
                     <th>Acciones</th>
@@ -202,7 +203,7 @@ require_once __DIR__ . '/auth.php';
                     <td><strong><?php echo htmlspecialchars($row_registros['descripcion']);?></strong></td>
                     <td><?php echo htmlspecialchars($row_registros['nombre_categoria']);?></td>
                     <td><strong style="color:var(--bakery-danger);">$<?php echo number_format($row_registros['monto'], 2, ',', '.');?></strong></td>
-                    <td><?php echo htmlspecialchars($row_registros['turno']);?></td>
+                    <td>N° <?php echo htmlspecialchars($row_registros['turno_id']);?></td>
                     <td><?php echo htmlspecialchars($row_registros['empleado']);?></td>
                     <td><?php echo htmlspecialchars($row_registros['fecha']);?></td>
                     <td align="center">
@@ -225,4 +226,4 @@ require_once __DIR__ . '/auth.php';
 
     <?php include("footer.php"); ?>
 </body>
-</html>
+</html>

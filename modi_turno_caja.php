@@ -2,6 +2,10 @@
 require_once __DIR__ . '/auth.php';
 ?>
 <?php
+// LAS CAJAS NO SE ELIMINAN NI SE MODIFICAN A MANO: se abren y se cierran con su arqueo.
+// (borrar una caja borraría también sus compras y cambiaría cierres ya hechos)
+require_once("caja_funciones.php");
+paginaAviso('No se puede modificar la caja', 'Las cajas no se eliminan ni se modifican. Se abren y se cierran desde el panel de Caja, y una caja cerrada queda tal como se cerró.', 'turno_caja_panel.php', 'Ir al historial de cajas');
 
 if (isset($_REQUEST['enviar'])){
 
@@ -24,4 +28,4 @@ if (isset($_REQUEST['enviar'])){
     mysqli_close($conex);
 }
 
-?>
+?>

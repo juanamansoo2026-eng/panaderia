@@ -1,6 +1,15 @@
 <?php
 require_once __DIR__ . '/auth.php';
 ?>
+<?php
+    include_once ('conexion.php');
+    require_once ('caja_funciones.php');
+    // CAJA ABIERTA (la compra se paga con el efectivo de esa caja)
+    $caja_abierta = cajaAbierta($conex);
+    if ($caja_abierta) {
+        $caja_abierta['disponible'] = totalesCaja($conex, $caja_abierta)['esperado'];
+    }
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,6 +41,27 @@ require_once __DIR__ . '/auth.php';
     <?php include("menu.php"); ?>
     <div class="container form-container" style="width: 600px">
         <h2 style="text-align: center">Alta Pedido de Compra - Panadería M</h2>
+
+        <?php if (!$caja_abierta) { ?>
+            <!-- SIN CAJA ABIERTA NO SE PUEDEN REGISTRAR COMPRAS -->
+            <div class="mensaje advertencia" role="alert">
+                No hay ninguna caja abierta. Para registrar compras primero tenés que abrirla.
+            </div>
+            <div class="resultado-acciones">
+                <a class="button" href="turno_caja_alta.php">Abrir Caja</a>
+                <a class="button button-outline" href="pedido_compra_panel.php">Volver</a>
+            </div>
+    </div>
+    <?php include("footer.php"); ?>
+</body>
+</html>
+        <?php exit(); } ?>
+
+        <p style="text-align: center;">
+            Caja abierta N° <b><?php echo $caja_abierta['id_turno']; ?></b>
+            de <?php echo htmlspecialchars($caja_abierta['nombre'] . ' ' . $caja_abierta['apellido']); ?>
+            · Efectivo disponible: <b><?php echo pesos($caja_abierta['disponible']); ?></b>
+        </p>
         <form action="alta_pedido_compra.php" method="post" autocomplete="off" required>
 
             <label>Proveedor:</label>
@@ -86,7 +116,7 @@ require_once __DIR__ . '/auth.php';
             <br>
 
             <label>Fecha:</label>
-            <input type="date" name="fecha" required>
+            <input type="date" name="fecha" value="<?php echo date('Y-m-d'); ?>" required>
             <br>
 
             <input type="submit" name="enviar" value="Grabar">
@@ -96,4 +126,4 @@ require_once __DIR__ . '/auth.php';
     </div>
     <?php include("footer.php"); ?>
 </body>
-</html>
+</html>

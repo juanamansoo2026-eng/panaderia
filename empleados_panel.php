@@ -83,6 +83,10 @@ require_once __DIR__ . '/auth.php';
         //     });
         // }
         function actualizarBaja(id_empleado, baja) {
+            if (baja == 0 && !confirm('¿Dar de baja a este usuario? Quedará como No Activo y se cargará la fecha de baja.')) {
+                location.reload();
+                return;
+            }
             $.ajax({
                 url: 'actualizar_baja.php',
                 type: 'POST',
@@ -175,7 +179,7 @@ require_once __DIR__ . '/auth.php';
             
             <div class="div-mayor">
                 <div class="b1">
-                    <a class="button" href="nuevo_emple.php">Nuevo Empleado</a>        
+                    <a class="button" href="nuevo_emple.php">Alta de Usuario</a>        
                     <a class="button" href="empleados_panel_baja.php"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m6 6 12 12"/></svg> Empleados Inactivos</a>
                 </div>
 
@@ -217,16 +221,27 @@ require_once __DIR__ . '/auth.php';
                             <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>No Activo</option>
                         </select>
                     </td>
-                    <td align="center">
+                    <td align="center"><div style="display:flex; gap:6px; justify-content:center;">
                         <form action="empleados_modi.php" method="post" style="margin:0;">
                             <input type="hidden" name="id_empleado" value="<?php echo $row_registros['id_empleado']; ?>">
-                            <button type="submit" class="table-action" title="Editar empleado" aria-label="Editar empleado">
+                            <button type="submit" class="table-action" title="Modificar correo" aria-label="Modificar correo">
                                 <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                 </svg>
                             </button>
                         </form>
+                        <form action="empleados_clave.php" method="post" style="margin:0;">
+                            <input type="hidden" name="id_empleado" value="<?php echo $row_registros['id_empleado']; ?>">
+                            <button type="submit" class="table-action" title="Restablecer clave" aria-label="Restablecer clave">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="7.5" cy="15.5" r="5.5"></circle>
+                                    <path d="m21 2-9.6 9.6"></path>
+                                    <path d="m15.5 7.5 3 3L22 7l-3-3"></path>
+                                </svg>
+                            </button>
+                        </form>
+                        </div>
                     </td>
                  </tr>
             <?php } ?>

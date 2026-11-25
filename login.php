@@ -1,6 +1,7 @@
 <?php
 session_start();
 include 'conexion.php';
+require_once __DIR__ . '/usuarios_funciones.php';
 
 $loginExitoso = false;
 $error = "";
@@ -39,6 +40,14 @@ function loginUsuario($username, $password) {
 
             $_SESSION['username'] = $username;
 
+            // Clave temporal (alta de usuario o clave restablecida): se exige cambiarla
+            if (esClaveTemporal($hashedPassword)) {
+                $_SESSION['cambiar_clave'] = true;
+                header("Location: cambiar_clave.php");
+                exit();
+            }
+
+            unset($_SESSION['cambiar_clave']);
             header("Location: page1.php");
             exit();
 

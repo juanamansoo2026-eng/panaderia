@@ -65,28 +65,12 @@ if (isset($_REQUEST['id_gasto'])) {
         <input type="number" step="0.01" name="monto" value="<?php echo $row_registro['monto']; ?>" required>
         <br>
 
-        <label>Turno:</label>
-        <select name="turno_id" id="turno" onchange="actualizarEmpleado()" required>
-            <?php
-            include_once ('conexion.php');
-            $resultado = mysqli_query($conex, "SELECT turno_caja.id_turno, turno_caja.turno, empleados.nombre, empleados.apellido
-                                                FROM turno_caja
-                                                INNER JOIN empleados ON turno_caja.empleado_id = empleados.id_empleado
-                                                ORDER BY turno");
-            ?>
-            <option value="">Seleccione un Turno</option>
-            <?php
-            while ($row = mysqli_fetch_assoc($resultado)) { ?>
-                <option value="<?php echo $row['id_turno']; ?>" data-empleado="<?php echo $row['nombre'] . ' ' . $row['apellido']; ?>"
-                 <?php if($row['id_turno'] == $row_registro['turno_id']){ echo 'selected';} ?>>
-                    <?php echo $row['turno'] . " - " . $row['nombre'] . " " . $row['apellido']; ?>
-                </option>
-            <?php
-            }
-            ?>
-        </select>
+        <label>Caja:</label>
+        <!-- EL GASTO NO SE PUEDE PASAR A OTRA CAJA -->
+        <input type="hidden" name="turno_id" value="<?php echo $row_registro['turno_id']; ?>">
+        <input style="background:silver;" type="text" value="<?php echo 'Caja N° ' . $row_registro['turno_id']; ?>" readonly>
         <br>
-        
+
         <label>Empleado:</label>
         <input type="text" name="empleado" id="empleado" value="<?php echo $row_registro['empleado']; ?>" readonly>
         <br>
@@ -103,4 +87,4 @@ if (isset($_REQUEST['id_gasto'])) {
         </div>
     <?php include("footer.php"); ?>
 </body>
-</html>
+</html>

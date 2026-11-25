@@ -13,6 +13,28 @@ if (isset($_REQUEST['enviar'])) {
     require_once("conexion.php"); 
     mysqli_query($conex,"SET NAMES 'UTF8'");
 
+    // EL GASTO SE PAGA CON LA CAJA ABIERTA
+    require_once("caja_funciones.php");
+    $caja = cajaAbierta($conex);
+    if (!$caja) {
+        mysqli_close($conex);
+        paginaAviso('No se guardó el gasto', 'No hay ninguna caja abierta. Abrila para poder registrar gastos.', 'turno_caja_alta.php', 'Abrir Caja');
+    }
+    $turno_id = (int)$caja['id_turno']; // siempre la caja abierta, aunque el formulario mande otra
+    $disponible = totalesCaja($conex, $caja)['esperado'];
+
+    // NO SE PUEDE PAGAR CON LA CAJA MÁS EFECTIVO DEL QUE HAY
+    if ((float)$monto <= 0) {
+        mysqli_close($conex);
+        paginaAviso('No se guardó el gasto', 'El monto tiene que ser mayor a cero.', 'gastos_administrativos_alta.php', 'Volver al formulario');
+    }
+    if (round((float)$monto, 2) > round($disponible, 2)) {
+        mysqli_close($conex);
+        paginaAviso('No se guardó el gasto',
+            'El gasto es de <b>' . pesos($monto) . '</b> y en la caja N° ' . $turno_id . ' hay <b>' . pesos($disponible) . '</b> en efectivo.',
+            'gastos_administrativos_alta.php', 'Volver al formulario');
+    }
+
     // Guardar la información del turno en la base de datos
     $resultado_alta = mysqli_query($conex, "INSERT INTO gastos_administrativos (turno_id, categoria_gasto_id, descripcion, monto, empleado, fecha) 
     VALUE ('$turno_id','$categoria_gasto_id','$descripcion','$monto','$empleado','$fecha')") 
@@ -29,22 +51,47 @@ if (isset($_REQUEST['enviar'])) {
         $row_nombre_turno = mysqli_fetch_assoc(mysqli_query($conex, $query_nombre_turno));    
         $nombre_turno = $row_nombre_turno['turno'];
 
-        // Mostrar los detalles del turno registrado
-        echo '<h2>Descripcion del Gasto:</h2> ' . "<b>" . $descripcion . "</b>" . 
-        '<br> <h2>Categoria:</h2> ' . "<b>" . $nombre_categoria . "</b>" . 
-        '<br> <h2>Monto:</h2> ' . "<b>$ " . $monto . "</b>" . 
-        '<br> <h2>Turno:</h2> ' . "<b>" . $nombre_turno . "</b>" . 
-        '<br> <h2>Empleado:</h2> ' . "<b> " . $empleado . "</b>" . 
-        '<br> <h2>Fecha:</h2> ' . "<b>" . $fecha . "</b>" . 
-        '<br> <h2>Se guardó correctamente.</h2>';
+        // MOSTRAR LOS DETALLES DEL GASTO REGISTRADO
         ?>
-        <form action="gastos_administrativos_panel.php">
-            <input type="submit" value="Continuar">
-        </form>
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Gasto guardado - Panadería M</title>
+            <link rel="stylesheet" href="css/panaderia-moderna.css">
+        </head>
+        <body>
+            <?php include("menu.php"); ?>
+            <main class="container form-container resultado-container">
+                <h2>Gasto registrado</h2>
+                <div class="mensaje exito" role="status">
+                    <svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></svg>
+                    El gasto se guardó correctamente.
+                </div>
+                <table>
+                    <tbody>
+                        <tr><td>Descripción</td><td><b><?php echo htmlspecialchars($descripcion); ?></b></td></tr>
+                        <tr><td>Categoría</td><td><?php echo htmlspecialchars($nombre_categoria); ?></td></tr>
+                        <tr><td>Monto</td><td><b>$<?php echo number_format((float)$monto, 2, ',', '.'); ?></b></td></tr>
+                        <tr><td>Caja</td><td>Caja N° <?php echo (int)$turno_id; ?></td></tr>
+                        <tr><td>Empleado</td><td><?php echo htmlspecialchars($empleado); ?></td></tr>
+                        <tr><td>Fecha</td><td><?php echo date('d/m/Y', strtotime($fecha)); ?></td></tr>
+                    </tbody>
+                </table>
+                <div class="resultado-acciones">
+                    <a class="button" href="gastos_administrativos_panel.php">Continuar</a>
+                    <a class="button button-outline" href="gastos_administrativos_alta.php">Cargar otro gasto</a>
+                    <a class="button button-outline" href="turno_caja_panel.php">Ir a Caja</a>
+                </div>
+            </main>
+            <?php include("footer.php"); ?>
+        </body>
+        </html>
         <?php
     } else {
         echo 'Error en el proceso';
     }
     mysqli_close($conex);
 }
-?>
+?>

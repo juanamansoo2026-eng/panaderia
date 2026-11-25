@@ -28,6 +28,7 @@ mysqli_close($conex);
             <div class="div-mayor">
                 <div class="b1">
                     <a class="button" href="pedido_compra_alta.php">Nuevo Pedido</a>
+                    <a class="button" href="turno_caja_panel.php">Caja</a>
                 </div>
 
                 <div class="b1">
@@ -82,4 +83,4 @@ mysqli_close($conex);
 
     <?php include("footer.php"); ?>
 </body>
-</html>
+</html>

@@ -9,121 +9,76 @@ require_once("conexion.php");
 $row_registro = null;
 if (isset($_POST['id_empleado']) && ctype_digit((string) $_POST['id_empleado'])) {
     $id_empleado = (int) $_POST['id_empleado'];
-    $registro = mysqli_query($conex, "SELECT * FROM empleados WHERE id_empleado = $id_empleado");
+    $registro = mysqli_query($conex, "SELECT empleados.*, roles.nombre_rol
+        FROM empleados
+        LEFT JOIN roles ON roles.id_rol = empleados.id_rol
+        WHERE id_empleado = $id_empleado");
 
     if (!$registro || !($row_registro = mysqli_fetch_assoc($registro))) {
         die("No se encontró el empleado solicitado.");
     }
-}
-
-if (isset($_POST['Guardar'])) {
-
-    $id_empleado = $_POST['id_empleado'];
-    $id_rol = $_POST['id_rol'];
-    $email = $_POST['email'];
-
-    $fecha_modi = date('Y-m-d');
-
-    $consulta = mysqli_query($conex, "
-        UPDATE empleados
-        SET 
-            id_rol = '$id_rol',
-            email = '$email',
-            fecha_modi = '$fecha_modi'
-        WHERE id_empleado = '$id_empleado'
-    ");
-
-    if ($consulta) {
-        header("Location: empleados_panel.php");
-        exit;
-    } else {
-        echo "Error al modificar: " . mysqli_error($conex);
-    }
+} else {
+    header("Location: empleados_panel.php");
+    exit;
 }
 
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">    
-    <title>Modificar Empleados</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Usuario - Panadería M</title>
     <link rel="stylesheet" href="css/panaderia-moderna.css">
 </head>
 <body>
     <?php include("menu.php"); ?>
     <div class="container form-container" style="width: 500px">
-        <h2>Modificar los Datos de los Empleados - Panadería M</h2>
+        <h2>Modificación de Usuario - Panadería M</h2>
+        <p>Solo se puede modificar el correo. La fecha de última modificación se actualiza sola.</p>
         <form action="modificar_emple.php" method="post" autocomplete="off">
-            <!-- ID Empleado (solo lectura) -->
-            <label>ID Empleado:</label>
-            <input style="background: #e0e0e0;" type="text" name="id_empleado" value="<?php echo $row_registro['id_empleado']; ?>" readonly>
-            <br>
+            <input type="hidden" name="id_empleado" value="<?php echo $row_registro['id_empleado']; ?>">
 
-            <!-- Nombre -->
-            <label>Nombre:</label>
-            <input type="text" name="nombre" value="<?php echo htmlspecialchars($row_registro['nombre']); ?>" required>
-            <br>
-
-            <!-- Apellido -->
-            <label>Apellido:</label>
-            <input type="text" name="apellido" value="<?php echo htmlspecialchars($row_registro['apellido']); ?>" required>
-            <br>
-
-            <!-- DNI -->
             <label>DNI:</label>
-            <input type="text" name="dni" value="<?php echo htmlspecialchars($row_registro['dni']); ?>" required>
+            <input style="background: #e0e0e0;" type="text" value="<?php echo htmlspecialchars($row_registro['dni']); ?>" readonly>
             <br>
 
-            <!-- Rol (solo lectura) -->
-            <!-- Rol -->
-        <label>Rol:</label>
-
-        <select name="id_rol" id="id_rol" required>
-            <?php
-            $consulta_roles = mysqli_query($conex, "SELECT * FROM roles");
-
-            while ($rol = mysqli_fetch_assoc($consulta_roles)) {
-                $seleccionado = ($rol['id_rol'] == $row_registro['id_rol']) ? 'selected' : '';
-
-                echo "<option value='" . $rol['id_rol'] . "' $seleccionado>";
-                echo $rol['nombre_rol'];
-                echo "</option>";
-            }
-            ?>
-        </select>
-
-        <br>
-
-            <!-- Telefono -->
-            <label>Telefono:</label>
-            <input type="text" name="telefono" value="<?php echo htmlspecialchars($row_registro['telefono']); ?>" required>
+            <label>Apellido:</label>
+            <input style="background: #e0e0e0;" type="text" value="<?php echo htmlspecialchars($row_registro['apellido']); ?>" readonly>
             <br>
 
-            <!-- Usuario (solo lectura) -->
+            <label>Nombre:</label>
+            <input style="background: #e0e0e0;" type="text" value="<?php echo htmlspecialchars($row_registro['nombre']); ?>" readonly>
+            <br>
+
+            <!-- Correo (único campo editable) -->
+            <label for="email">Correo:</label>
+            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($row_registro['email']); ?>" required>
+            <br>
+
             <label>Usuario:</label>
-            <input style="background: #e0e0e0;" type="text" name="username" value="<?php echo $row_registro['username']; ?>" readonly>
+            <input style="background: #e0e0e0;" type="text" value="<?php echo htmlspecialchars($row_registro['username']); ?>" readonly>
             <br>
 
-            <!-- Contraseña (solo lectura) -->
-            <label>Contraseña:</label>
-            <input style="background: #e0e0e0;" type="text" name="password" value="<?php echo $row_registro['password']; ?>" readonly>
+            <label>Rol:</label>
+            <input style="background: #e0e0e0;" type="text" value="<?php echo htmlspecialchars((string) $row_registro['nombre_rol']); ?>" readonly>
             <br>
 
-            <!-- Email (editable) -->
-            <label>Email:</label>
-            <input type="email" name="email" value="<?php echo htmlspecialchars($row_registro['email']); ?>" required>
+            <label>Activo:</label>
+            <input style="background: #e0e0e0;" type="text" value="<?php echo ($row_registro['baja'] == 1) ? 'Sí' : 'No'; ?>" readonly>
             <br>
 
-            <!-- Fecha Alta (solo lectura) -->
             <label>Fecha Alta:</label>
-            <input style="background: #e0e0e0;" type="date" name="fecha_alta" value="<?php echo $row_registro['fecha_alta']; ?>" readonly>
+            <input style="background: #e0e0e0;" type="date" value="<?php echo $row_registro['fecha_alta']; ?>" readonly>
             <br>
 
-            <!-- Fecha Modificación (solo lectura) -->
-            <label>Fecha Modi:</label>
-            <input style="background: #e0e0e0;" type="date" name="fecha_modi" value="<?php echo $row_registro['fecha_modi']; ?>" readonly>
+            <label>Fecha Última Modificación:</label>
+            <input style="background: #e0e0e0;" type="date" value="<?php echo $row_registro['fecha_modi']; ?>" readonly>
+            <br>
+
+            <label>Fecha Baja:</label>
+            <input style="background: #e0e0e0;" type="date" value="<?php echo $row_registro['fecha_baja']; ?>" readonly>
             <br>
 
             <!-- Botones -->
@@ -134,8 +89,6 @@ if (isset($_POST['Guardar'])) {
         </form>
     </div>
 
-    <form action="empleados_panel.php" id="volver" method="post"></form>
-    
     <?php include("footer.php"); ?>
 </body>
 </html>

@@ -3,8 +3,12 @@ require_once __DIR__ . '/auth.php';
 ?>
 <?php if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 include_once("conexion.php");
+require_once("caja_funciones.php");
 
 $fecha_actual = date('Y-m-d H:i:s');
+
+// CAJA DE VENTAS ABIERTA (la venta se guarda en esa caja)
+$caja_abierta = cajaAbierta($conex);
 
 $clientes_query = "SELECT id_cliente, nombre, apellido FROM clientes";
 $empleados_query = "SELECT id_empleado, nombre, apellido, username FROM empleados";
@@ -37,6 +41,26 @@ while ($row_producto = $productos_result->fetch_assoc()) {
 
     <div class="container" style="max-width: 900px;">
         <h2 style="text-align: center;">Registrar Nueva Venta - Panadería M</h2>
+
+        <?php if (!$caja_abierta) { ?>
+            <!-- SIN CAJA ABIERTA NO SE PUEDEN REGISTRAR VENTAS -->
+            <div class="mensaje advertencia" role="alert">
+                No hay ninguna caja abierta. Para registrar ventas primero tenés que abrirla.
+            </div>
+            <div class="resultado-acciones">
+                <a class="button" href="turno_caja_alta.php">Abrir Caja</a>
+                <a class="button button-outline" href="ventas_panel.php">Volver</a>
+            </div>
+        </div>
+        <?php include("footer.php"); ?>
+</body>
+</html>
+        <?php exit(); } ?>
+
+        <p style="text-align: center;">
+            Caja abierta N° <b><?php echo $caja_abierta['id_turno']; ?></b>
+            de <?php echo htmlspecialchars($caja_abierta['nombre'] . ' ' . $caja_abierta['apellido']); ?>
+        </p>
 
         <form action="alta_ventas.php" method="post" id="formVenta">
 
@@ -206,4 +230,4 @@ while ($row_producto = $productos_result->fetch_assoc()) {
 
     <?php include("footer.php"); ?>
 </body>
-</html>
+</html>
