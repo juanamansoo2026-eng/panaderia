@@ -3,13 +3,6 @@ require_once __DIR__ . '/auth.php';
 ?>
 <?php
     require_once("conexion.php");
-    $registros= mysqli_query($conex,"SELECT id_venta, cliente_id, empleado_id, clientes.nombre as c_nombre, clientes.apellido as c_apellido, 
-                                    empleados.nombre as e_nombre, empleados.apellido as e_apellido, subtotal, descuento, total, forma_pago, fecha 
-    FROM ventas 
-    INNER JOIN clientes ON clientes.id_cliente = ventas.cliente_id
-    INNER JOIN empleados ON empleados.id_empleado = ventas.empleado_id
-    ORDER BY id_venta")
-    or die ("problema en la consulta".mysqli_error($conex));
 
     // FILTROS
     $buscar_cliente = isset($_GET['buscar_cliente']) ? trim($_GET['buscar_cliente']) : '';
@@ -26,61 +19,15 @@ require_once __DIR__ . '/auth.php';
     $fecha_hasta = validarFecha($fecha_hasta);
 
     // CONSULTA INICIAL
-    $sql = "SELECT id_venta, cliente_id, empleado_id,
-                clientes.nombre AS c_nombre, clientes.apellido AS c_apellido,
-                empleados.nombre AS e_nombre, empleados.apellido AS e_apellido,
-                subtotal, descuento, total, forma_pago, fecha
-            FROM ventas
-            INNER JOIN clientes ON clientes.id_cliente = ventas.cliente_id
-            INNER JOIN empleados ON empleados.id_empleado = ventas.empleado_id
-            WHERE 1=1";
-
-    // FILTROS
-    if ($buscar_cliente != '') {
-        $sql .= " AND (clientes.nombre LIKE ? OR clientes.apellido LIKE ? OR CONCAT(clientes.nombre, ' ', clientes.apellido) LIKE ?)";
-    }
-
-    if ($fecha_desde != '') {
-        $sql .= " AND DATE(ventas.fecha) >= ?";
-    }
-
-    if ($fecha_hasta != '') {
-        $sql .= " AND DATE(ventas.fecha) <= ?";
-    }
-
-    // ORDENAR
-    $sql .= " ORDER BY id_venta DESC";
-
-    // PREPARAR CONSULTA
-    $consulta = mysqli_prepare($conex, $sql);
-
-    $parametros = [];
-    $tipos_parametros = '';
-
-    // CARGAR PARÁMETROS
-    if ($buscar_cliente != '') {
-        $tipos_parametros .= 'sss';
-        $parametros = ["$buscar_cliente%", "$buscar_cliente%", "$buscar_cliente%"];
-    }
-
-    if ($fecha_desde != '') {
-        $tipos_parametros .= 's';
-        $parametros[] = $fecha_desde;
-    }
-
-    if ($fecha_hasta != '') {
-        $tipos_parametros .= 's';
-        $parametros[] = $fecha_hasta;
-    }
-
-    // VINCULAR PARÁMETROS
-    if (!empty($parametros)) {
-        mysqli_stmt_bind_param($consulta, $tipos_parametros, ...$parametros);
-    }
-
-    // EJECUTAR CONSULTA
-    mysqli_stmt_execute($consulta);
-    $registros = mysqli_stmt_get_result($consulta);
+    $registros = mysqli_query($conex, "SELECT id_venta, cliente_id, empleado_id,
+        clientes.nombre AS c_nombre, clientes.apellido AS c_apellido,
+        empleados.nombre AS e_nombre, empleados.apellido AS e_apellido,
+        subtotal, descuento, total, forma_pago, fecha
+        FROM ventas
+        INNER JOIN clientes ON clientes.id_cliente = ventas.cliente_id
+        INNER JOIN empleados ON empleados.id_empleado = ventas.empleado_id
+        ORDER BY id_venta DESC")
+        or die("Problema en la consulta " . mysqli_error($conex));
 
     mysqli_close($conex);
 ?>
@@ -179,7 +126,7 @@ require_once __DIR__ . '/auth.php';
                 </tr>
             </thead>
             <tbody>
-            <?php while($row_registros= mysqli_fetch_assoc($registros)) { ?>
+            <?php /* while($row_registros= mysqli_fetch_assoc($registros)) { ?>
                 <tr align="center">   
                     <td><?php echo htmlspecialchars($row_registros['id_venta']);?></td> 
                     <td><strong><?php echo htmlspecialchars($row_registros['c_nombre'] . " " . $row_registros['c_apellido']);?></strong></td>
@@ -196,6 +143,33 @@ require_once __DIR__ . '/auth.php';
                         </form>
                     </td>
                 </tr>
+            <?php } */ ?>
+            <?php while($row_registros = mysqli_fetch_assoc($registros)) { ?>
+                <?php
+                // COMPROBAR LOS FILTROS
+                if (
+                    ($buscar_cliente == '' || stripos($row_registros['c_nombre'] . ' ' . $row_registros['c_apellido'], $buscar_cliente) !== false) &&
+                    ($fecha_desde == '' || date('Y-m-d', strtotime($row_registros['fecha'])) >= $fecha_desde) &&
+                    ($fecha_hasta == '' || date('Y-m-d', strtotime($row_registros['fecha'])) <= $fecha_hasta)
+                ) {
+                ?>
+                <tr align="center">
+                    <td><?php echo htmlspecialchars($row_registros['id_venta']);?></td>
+                    <td><strong><?php echo htmlspecialchars($row_registros['c_nombre'] . " " . $row_registros['c_apellido']);?></strong></td>
+                    <td><?php echo htmlspecialchars($row_registros['e_nombre'] . " " . $row_registros['e_apellido']);?></td>
+                    <td>$<?php echo number_format($row_registros['subtotal'], 2, ',', '.');?></td>
+                    <td>$<?php echo number_format($row_registros['descuento'], 2, ',', '.');?></td>
+                    <td><strong style="color: var(--bakery-primary);">$<?php echo number_format($row_registros['total'], 2, ',', '.');?></strong></td>
+                    <td><span class="bakery-badge"><?php echo htmlspecialchars($row_registros['forma_pago']);?></span></td>
+                    <td><?php echo htmlspecialchars($row_registros['fecha']);?></td>
+                    <td>
+                        <form action="ventas_pdf.php" method="post" target="_blank">
+                            <input type="hidden" name="id_venta" value="<?php echo $row_registros['id_venta'];?>">
+                            <input type="image" name="editar" src="img/pdf.png" width="22" title="Imprimir PDF / Detalles">
+                        </form>
+                    </td>
+                </tr>
+                <?php } ?>
             <?php } ?>
             </tbody>
         </table>
