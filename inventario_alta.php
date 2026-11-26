@@ -72,7 +72,7 @@ $fecha_actual = date('Y-m-d');
             
             <div style="text-align: center; margin-top: 20px;">
                 <button type="submit" name="enviar"><svg class="ui-icon" aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h12l4 4v14H3V3zM7 3v6h10V3M7 21v-8h10v8"/></svg>Grabar</button>
-                <a class="button button-outline" href="inventario_panel.php">❌ Cancelar</a>
+                <a class="button button-outline" href="inventario_panel.php">Cancelar</a>
             </div>
         </form>
     </div>

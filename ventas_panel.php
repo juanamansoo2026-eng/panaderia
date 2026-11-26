@@ -2,82 +2,87 @@
 require_once __DIR__ . '/auth.php';
 ?>
 <?php
-require_once("conexion.php");
-$registros= mysqli_query($conex,"SELECT id_venta, cliente_id, empleado_id, clientes.nombre as c_nombre, clientes.apellido as c_apellido, 
-                                empleados.nombre as e_nombre, empleados.apellido as e_apellido, subtotal, descuento, total, forma_pago, fecha 
-FROM ventas 
-INNER JOIN clientes ON clientes.id_cliente = ventas.cliente_id
-INNER JOIN empleados ON empleados.id_empleado = ventas.empleado_id
-ORDER BY id_venta")
-or die ("problema en la consulta".mysqli_error($conex));
+    require_once("conexion.php");
+    $registros= mysqli_query($conex,"SELECT id_venta, cliente_id, empleado_id, clientes.nombre as c_nombre, clientes.apellido as c_apellido, 
+                                    empleados.nombre as e_nombre, empleados.apellido as e_apellido, subtotal, descuento, total, forma_pago, fecha 
+    FROM ventas 
+    INNER JOIN clientes ON clientes.id_cliente = ventas.cliente_id
+    INNER JOIN empleados ON empleados.id_empleado = ventas.empleado_id
+    ORDER BY id_venta")
+    or die ("problema en la consulta".mysqli_error($conex));
 
-// Recibir filtros
-$buscar_cliente = isset($_GET['buscar_cliente'])
-    ? trim($_GET['buscar_cliente']) : '';
+    // FILTROS
+    $buscar_cliente = isset($_GET['buscar_cliente']) ? trim($_GET['buscar_cliente']) : '';
+    $fecha_desde = isset($_GET['fecha_desde']) ? $_GET['fecha_desde'] : '';
+    $fecha_hasta = isset($_GET['fecha_hasta']) ? $_GET['fecha_hasta'] : '';
 
-$fecha_desde = isset($_GET['fecha_desde'])
-    ? $_GET['fecha_desde'] : '';
+    // VALIDAR FECHAS
+    function validarFecha($fecha) {
+        $d = DateTime::createFromFormat('!Y-m-d', $fecha);
+        return ($d && $d->format('Y-m-d') === $fecha) ? $fecha : '';
+    }
 
-$fecha_hasta = isset($_GET['fecha_hasta'])
-    ? $_GET['fecha_hasta'] : '';
+    $fecha_desde = validarFecha($fecha_desde);
+    $fecha_hasta = validarFecha($fecha_hasta);
 
-// Validar fechas
-function validarFecha($fecha) {
-    $d = DateTime::createFromFormat('!Y-m-d', $fecha);
-    return ($d && $d->format('Y-m-d') === $fecha) ? $fecha : '';
-}
+    // CONSULTA INICIAL
+    $sql = "SELECT id_venta, cliente_id, empleado_id,
+                clientes.nombre AS c_nombre, clientes.apellido AS c_apellido,
+                empleados.nombre AS e_nombre, empleados.apellido AS e_apellido,
+                subtotal, descuento, total, forma_pago, fecha
+            FROM ventas
+            INNER JOIN clientes ON clientes.id_cliente = ventas.cliente_id
+            INNER JOIN empleados ON empleados.id_empleado = ventas.empleado_id
+            WHERE 1=1";
 
-$fecha_desde = validarFecha($fecha_desde);
-$fecha_hasta = validarFecha($fecha_hasta);
+    // FILTROS
+    if ($buscar_cliente != '') {
+        $sql .= " AND (clientes.nombre LIKE ? OR clientes.apellido LIKE ? OR CONCAT(clientes.nombre, ' ', clientes.apellido) LIKE ?)";
+    }
 
-// Construir consulta
-$sql = "SELECT 
-            id_venta,
-            cliente_id,
-            empleado_id,
-            clientes.nombre AS c_nombre,
-            clientes.apellido AS c_apellido,
-            empleados.nombre AS e_nombre,
-            empleados.apellido AS e_apellido,
-            subtotal,
-            descuento,
-            total,
-            forma_pago,
-            fecha
-        FROM ventas
-        INNER JOIN clientes
-            ON clientes.id_cliente = ventas.cliente_id
-        INNER JOIN empleados
-            ON empleados.id_empleado = ventas.empleado_id
-        WHERE 1=1";
+    if ($fecha_desde != '') {
+        $sql .= " AND DATE(ventas.fecha) >= ?";
+    }
 
-// Filtro por nombre o apellido del cliente
-if ($buscar_cliente !== '') {
-    $buscar = mysqli_real_escape_string($conex, $buscar_cliente);
+    if ($fecha_hasta != '') {
+        $sql .= " AND DATE(ventas.fecha) <= ?";
+    }
 
-    $sql .= " AND CONCAT(clientes.nombre, ' ', clientes.apellido)
-              LIKE '%$buscar%'";
-}
+    // ORDENAR
+    $sql .= " ORDER BY id_venta DESC";
 
-// Filtro desde una fecha
-if ($fecha_desde !== '') {
-    $desde = mysqli_real_escape_string($conex, $fecha_desde);
-    $sql .= " AND DATE(ventas.fecha) >= '$desde'";
-}
+    // PREPARAR CONSULTA
+    $consulta = mysqli_prepare($conex, $sql);
 
-// Filtro hasta una fecha
-if ($fecha_hasta !== '') {
-    $hasta = mysqli_real_escape_string($conex, $fecha_hasta);
-    $sql .= " AND DATE(ventas.fecha) <= '$hasta'";
-}
+    $parametros = [];
+    $tipos_parametros = '';
 
-// Ordenar ventas
-$sql .= " ORDER BY id_venta DESC";
+    // CARGAR PARÁMETROS
+    if ($buscar_cliente != '') {
+        $tipos_parametros .= 'sss';
+        $parametros = ["$buscar_cliente%", "$buscar_cliente%", "$buscar_cliente%"];
+    }
 
-$registros = mysqli_query($conex, $sql)
-    or die("Problema en la consulta: " . mysqli_error($conex));
+    if ($fecha_desde != '') {
+        $tipos_parametros .= 's';
+        $parametros[] = $fecha_desde;
+    }
 
-mysqli_close($conex);
+    if ($fecha_hasta != '') {
+        $tipos_parametros .= 's';
+        $parametros[] = $fecha_hasta;
+    }
+
+    // VINCULAR PARÁMETROS
+    if (!empty($parametros)) {
+        mysqli_stmt_bind_param($consulta, $tipos_parametros, ...$parametros);
+    }
+
+    // EJECUTAR CONSULTA
+    mysqli_stmt_execute($consulta);
+    $registros = mysqli_stmt_get_result($consulta);
+
+    mysqli_close($conex);
 ?>
 
 <!DOCTYPE html>
@@ -95,45 +100,57 @@ mysqli_close($conex);
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Historial de Ventas - Panadería M</h2>
 
-<form method="GET" action="" class="div-filtros">
+            <!-- DIV DE FILTROS -->
+            <div>
+                <form method="GET" action="ventas_panel.php">
+                    <div class="div-filtros">
 
-    <div>
-        <label for="buscar_cliente">Buscar cliente:</label>
-        <input
-            type="text"
-            name="buscar_cliente"
-            id="buscar_cliente"
-            placeholder="Nombre o apellido..."
-            value="<?= htmlspecialchars($buscar_cliente) ?>"
-        >
-    </div>
+                        <!-- BUSCAR POR NOMBRE O APELLIDO -->
+                        <div>
+                            <label for="buscar_cliente">Buscar cliente:</label>
+                            <input
+                                type="text"
+                                name="buscar_cliente"
+                                id="buscar_cliente"
+                                placeholder="Nombre o apellido..."
+                                value="<?php echo htmlspecialchars($buscar_cliente); ?>"
+                            >
+                        </div>
 
-    <div>
-        <label for="fecha_desde">Desde:</label>
-        <input
-            type="date"
-            name="fecha_desde"
-            id="fecha_desde"
-            value="<?= htmlspecialchars($fecha_desde) ?>"
-        >
-    </div>
+                        <!-- FILTRAR DESDE FECHA -->
+                        <div>
+                            <label for="fecha_desde">Desde:</label>
+                            <input
+                                type="date"
+                                name="fecha_desde"
+                                id="fecha_desde"
+                                value="<?php echo htmlspecialchars($fecha_desde); ?>"
+                            >
+                        </div>
 
-    <div>
-        <label for="fecha_hasta">Hasta:</label>
-        <input
-            type="date"
-            name="fecha_hasta"
-            id="fecha_hasta"
-            value="<?= htmlspecialchars($fecha_hasta) ?>"
-        >
-    </div>
+                        <!-- FILTRAR HASTA FECHA -->
+                        <div>
+                            <label for="fecha_hasta">Hasta:</label>
+                            <input
+                                type="date"
+                                name="fecha_hasta"
+                                id="fecha_hasta"
+                                value="<?php echo htmlspecialchars($fecha_hasta); ?>"
+                            >
+                        </div>
 
-    <div>
-        <button type="submit">Buscar / Filtrar</button>
-        <a href="<?= htmlspecialchars($_SERVER['PHP_SELF']) ?>" class="button button-outline">Limpiar</a>
-    </div>
-
-</form>
+                        <!-- BOTONES BUSCAR Y LIMPIAR -->
+                        <div style="padding-top: 30px;">
+                            <button type="submit" class="button">
+                                BUSCAR
+                            </button>
+                            <a href="ventas_panel.php" class="button button-outline">
+                                LIMPIAR
+                            </a>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <div class="div-mayor">
                 <div class="b1">
@@ -158,12 +175,12 @@ mysqli_close($conex);
                     <th>Total</th>
                     <th>Forma de Pago</th>
                     <th>Fecha</th>
-                    <th colspan="2">Acciones</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
             <?php while($row_registros= mysqli_fetch_assoc($registros)) { ?>
-                <tr>   
+                <tr align="center">   
                     <td><?php echo htmlspecialchars($row_registros['id_venta']);?></td> 
                     <td><strong><?php echo htmlspecialchars($row_registros['c_nombre'] . " " . $row_registros['c_apellido']);?></strong></td>
                     <td><?php echo htmlspecialchars($row_registros['e_nombre'] . " " . $row_registros['e_apellido']);?></td>
@@ -172,7 +189,7 @@ mysqli_close($conex);
                     <td><strong style="color: var(--bakery-primary);">$<?php echo number_format($row_registros['total'], 2, ',', '.');?></strong></td>
                     <td><span class="bakery-badge"><?php echo htmlspecialchars($row_registros['forma_pago']);?></span></td>
                     <td><?php echo htmlspecialchars($row_registros['fecha']);?></td>
-                    <td align="center">
+                    <td>
                         <form action="ventas_pdf.php" method="post" target="_blank">
                             <input type="hidden" name="id_venta" value="<?php echo $row_registros['id_venta'];?>">
                             <input type="image" name="editar" src="img/pdf.png" width="22" title="Imprimir PDF / Detalles">

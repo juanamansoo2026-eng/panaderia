@@ -4,77 +4,26 @@ require_once __DIR__ . '/auth.php';
 <?php
     $fecha_actual = date('Y-m-d');
     require_once("conexion.php");
-    $registros= mysqli_query($conex,"SELECT * FROM proveedor ")
-    or die ("problema en la consulta".mysqli_error($conex)); 
+
+    // CONSULTA INICIAL
+    $registros = mysqli_query($conex, "SELECT *
+    FROM proveedor
+    ORDER BY baja DESC, nombre ASC")
+    or die("Problema en la consulta " . mysqli_error($conex));
 
     // FILTROS
     $buscar = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
     $provincia = isset($_GET['provincia']) ? trim($_GET['provincia']) : '';
+    $estado = isset($_GET['estado']) ? $_GET['estado'] : 'todos';
 
-    // CONSULTA INICIAL
-    $sql = "SELECT * FROM proveedor WHERE 1=1";
-
-    // BUSCAR POR NOMBRE, APELLIDO O CUIL
-    if ($buscar != '') {
-        $sql .= " AND (
-                    nombre LIKE ?
-                    OR apellido LIKE ?
-                    OR cuil LIKE ?
-                  )";
-    }
-
-    // FILTRO POR PROVINCIA
-    if ($provincia != '') {
-        $sql .= " AND provincia = ?";
-    }
-
-    // ORDENAR POR NOMBRE
-    $sql .= " ORDER BY nombre ASC";
-
-    // PREPARAR CONSULTA SEGURA
-    $consulta = mysqli_prepare($conex, $sql);
-
-    $parametros = [];
-    $tipos_parametros = '';
-
-    // PARÁMETRO DE BÚSQUEDA
-    if ($buscar != '') {
-        $tipos_parametros .= 'sss';
-
-        $parametros[] = "$buscar%";
-        $parametros[] = "$buscar%";
-        $parametros[] = "$buscar%";
-    }
-
-    // PARÁMETRO PROVINCIA
-    if ($provincia != '') {
-        $tipos_parametros .= 's';
-        $parametros[] = $provincia;
-    }
-
-    // VINCULAR PARÁMETROS
-    if (!empty($parametros)) {
-        mysqli_stmt_bind_param(
-            $consulta,
-            $tipos_parametros,
-            ...$parametros
-        );
-    }
-
-    // EJECUTAR CONSULTA
-    mysqli_stmt_execute($consulta);
-
-    $registros = mysqli_stmt_get_result($consulta);
-
-    // OBTENER PROVINCIAS PARA EL SELECT
+    // OBTENER PROVINCIAS
     $sql_provincias = "SELECT DISTINCT provincia
-                       FROM proveedor
-                       WHERE provincia IS NOT NULL
-                       AND provincia != ''
-                       ORDER BY provincia ASC";
+    FROM proveedor
+    WHERE provincia IS NOT NULL AND provincia != ''
+    ORDER BY provincia ASC";
 
     $provincias = mysqli_query($conex, $sql_provincias)
-        or die("Problema al consultar provincias: " . mysqli_error($conex));
+    or die("Problema al consultar provincias: " . mysqli_error($conex));
 
     mysqli_close($conex);
 ?>
@@ -98,7 +47,7 @@ require_once __DIR__ . '/auth.php';
                 <form method="GET" action="proveedores_panel.php">
                     <div class="div-filtros">
 
-                        <!-- BUSCAR POR NOMBRE, APELLIDO O CUIL -->
+                        <!-- BUSCAR PROVEEDOR -->
                         <div>
                             <label for="buscar">Buscar proveedor:</label>
                             <input
@@ -114,9 +63,9 @@ require_once __DIR__ . '/auth.php';
                         <div>
                             <label for="provincia">Provincia:</label>
                             <select name="provincia" id="provincia">
-
-                                <option value="">Todas las provincias</option>
-
+                                <option value="">
+                                    Todas las provincias
+                                </option>
                                 <?php while($row_provincia = mysqli_fetch_assoc($provincias)) { ?>
 
                                     <option
@@ -127,16 +76,30 @@ require_once __DIR__ . '/auth.php';
                                     </option>
 
                                 <?php } ?>
+                            </select>
+                        </div>
 
+                        <!-- FILTRAR ESTADO -->
+                        <div>
+                            <label for="estado">Estado:</label>
+                            <select name="estado" id="estado">
+                                <option value="todos" <?php if($estado == 'todos') echo 'selected'; ?>>
+                                    Todos
+                                </option>
+                                <option value="1" <?php if($estado == '1') echo 'selected'; ?>>
+                                    Activos
+                                </option>
+                                <option value="0" <?php if($estado == '0') echo 'selected'; ?>>
+                                    Inactivos
+                                </option>
                             </select>
                         </div>
 
                         <!-- BOTONES -->
-                        <div>
+                        <div style="padding-top: 30px;">
                             <button type="submit" class="button">
                                 BUSCAR
                             </button>
-
                             <a href="proveedores_panel.php" class="button button-outline">
                                 LIMPIAR
                             </a>
@@ -166,16 +129,16 @@ require_once __DIR__ . '/auth.php';
                     <th>Apellido</th>
                     <th>Teléfono</th>
                     <th>Razón Social</th>
-                    <th>Cuil - Cuit</th>
+                    <th>Cuil</th>
                     <th>Provincia - Localidad</th>
                     <th>¿Qué Vende?</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
-                    <th>Baja</th>
                 </tr>
             </thead>
             <tbody>
-            <?php while($row_registros= mysqli_fetch_assoc($registros)) { ?>
-                <tr>   
+            <?php /* while($row_registros= mysqli_fetch_assoc($registros)) { ?>
+                <tr align="center">   
                     <td><?php echo htmlspecialchars($row_registros['id_proveedor']);?></td> 
                     <td><strong><?php echo htmlspecialchars($row_registros['nombre']);?></strong></td>
                     <td><?php echo htmlspecialchars($row_registros['apellido']);?></td>
@@ -183,20 +146,71 @@ require_once __DIR__ . '/auth.php';
                     <td><?php echo htmlspecialchars($row_registros['razon_social']);?></td> 
                     <td><?php echo htmlspecialchars($row_registros['cuil']);?></td> 
                     <td><?php echo htmlspecialchars($row_registros['provincia']);?></td> 
-                    <td><?php echo htmlspecialchars($row_registros['descripcion']);?></td> 
-                    <td align="center">
-                        <form action="proveedores_modi.php" method="post">
-                            <input type="hidden" name="id_proveedor" value="<?php echo $row_registros['id_proveedor'];?>">
+                    <td><?php echo htmlspecialchars($row_registros['descripcion']);?></td>
+                    <td> 
+                        <select onchange="actualizarBaja(<?php echo $row_registros['id_proveedor']; ?>, this.value)" style="margin-bottom:0; padding: 4px 8px; font-size:0.85rem;">
+                            <option value="1" <?php echo ($row_registros['baja'] == 1) ? 'selected' : ''; ?>>Activo</option>
+                            <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>No Activo</option>
+                        </select>
+                    </td> 
+                    <td>
+                        <form action="proveedores_modi.php" method="post" style="margin:0;">
+                            <input type="hidden" name="id_proveedor" value="<?php echo $row_registros['id_proveedor']; ?>">
                             <button type="submit" class="table-action" title="Editar proveedor" aria-label="Editar proveedor">
-                                <svg width="15px" height="15px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                 </svg>
                             </button>
                         </form>
                     </td>
-                    <td align="center"><?php echo htmlspecialchars($row_registros['baja']);?></td> 
                 </tr>
+            <?php } */ ?>
+             <?php while($row_registros = mysqli_fetch_assoc($registros)) { ?>
+                <?php
+                // COMPROBAR LOS FILTROS
+                if (
+                    ($buscar == '' ||
+                    stripos($row_registros['nombre'], $buscar) === 0 ||
+                    stripos($row_registros['apellido'], $buscar) === 0 ||
+                    stripos($row_registros['cuil'], $buscar) === 0 ||
+                    stripos($row_registros['nombre'] . ' ' . $row_registros['apellido'], $buscar) === 0) &&
+                    ($provincia == '' || $row_registros['provincia'] == $provincia) &&
+                    ($estado == 'todos' || $row_registros['baja'] == $estado)
+                ) {
+                ?>
+                <tr align="center">
+                    <td><?php echo htmlspecialchars($row_registros['id_proveedor']); ?></td>
+                    <td><strong><?php echo htmlspecialchars($row_registros['nombre']); ?></strong></td>
+                    <td><?php echo htmlspecialchars($row_registros['apellido']); ?></td>
+                    <td><?php echo htmlspecialchars($row_registros['telefono']); ?></td>
+                    <td><?php echo htmlspecialchars($row_registros['razon_social']); ?></td>
+                    <td><?php echo htmlspecialchars($row_registros['cuil']); ?></td>
+                    <td><?php echo htmlspecialchars($row_registros['provincia']); ?></td>
+                    <td><?php echo htmlspecialchars($row_registros['descripcion']); ?></td>
+                    <td>
+                        <select onchange="actualizarBaja(<?php echo $row_registros['id_proveedor']; ?>, this.value)" style="margin-bottom:0; padding: 4px 8px; font-size:0.85rem;">
+                            <option value="1" <?php echo ($row_registros['baja'] == 1) ? 'selected' : ''; ?>>
+                                Activo
+                            </option>
+                            <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>
+                                No Activo
+                            </option>
+                        </select>
+                    </td>
+                    <td>
+                        <form action="proveedores_modi.php" method="post" style="margin:0;">
+                            <input type="hidden" name="id_proveedor" value="<?php echo $row_registros['id_proveedor']; ?>">
+                            <button type="submit" class="table-action" title="Editar proveedor" aria-label="Editar proveedor">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <?php } ?>
             <?php } ?>
             </tbody>
         </table>

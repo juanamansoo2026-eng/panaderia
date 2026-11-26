@@ -4,70 +4,31 @@ require_once __DIR__ . '/auth.php';
 <?php
     $fecha_actual = date('Y-m-d');
     require_once("conexion.php");
-    $registros= mysqli_query($conex,"SELECT id_producto, nombre, tipo, precio, baja FROM productos")
-    or die ("problema en la consulta".mysqli_error($conex)); 
     
-
-
-    // Filtros
+    // FILTROS
     $nombre = isset($_GET['nombre']) ? trim($_GET['nombre']) : '';
     $tipo = isset($_GET['tipo']) ? $_GET['tipo'] : 'Todos';
     $orden = isset($_GET['orden']) ? $_GET['orden'] : '';
+    $estado = isset($_GET['estado']) ? $_GET['estado'] : 'todos';
 
-    // Consulta inicial
-    $sql = "SELECT id_producto, nombre, tipo, precio, baja FROM productos WHERE 1=1";
-
-    // Filtro por nombre
-    if ($nombre != '') {
-        $sql .= " AND nombre LIKE ?";
-    }
-
-    // Filtro por tipo
-    if ($tipo != 'Todos' && $tipo != '') {
-        $sql .= " AND tipo = ?";
-    }
-
-    // Orden por precio
+    // CONSULTA INICIAL
     if ($orden == 'mayor') {
-        $sql .= " ORDER BY precio DESC";
+        $registros = mysqli_query($conex,"SELECT id_producto, nombre, tipo, precio, baja FROM productos ORDER BY baja DESC, precio DESC");
     } elseif ($orden == 'menor') {
-        $sql .= " ORDER BY precio ASC";
+        $registros = mysqli_query($conex,"SELECT id_producto, nombre, tipo, precio, baja FROM productos ORDER BY baja DESC, precio ASC");
+    } else {
+        $registros = mysqli_query($conex,"SELECT id_producto, nombre, tipo, precio, baja FROM productos ORDER BY baja DESC, id_producto ASC");
     }
 
-    // Preparar consulta segura
-    $consulta = mysqli_prepare($conex, $sql);
-
-    $parametros = [];
-    $tipos_parametros = '';
-
-    if ($nombre != '') {
-        $tipos_parametros .= 's';
-        $parametros[] = "%$nombre%";
+    if (!$registros) {
+        die("Problema en la consulta: " . mysqli_error($conex));
     }
 
-    if ($tipo != 'Todos' && $tipo != '') {
-        $tipos_parametros .= 's';
-        $parametros[] = $tipo;
-    }
+    // OBTENER TIPOS
+    $tipos = mysqli_query($conex,"SELECT DISTINCT tipo FROM productos")
+    or die("Problema al obtener tipos: " . mysqli_error($conex));
 
-    if (!empty($parametros)) {
-        mysqli_stmt_bind_param(
-            $consulta,
-            $tipos_parametros,
-            ...$parametros
-        );
-    }
-
-    mysqli_stmt_execute($consulta);
-    $registros = mysqli_stmt_get_result($consulta);
-
-    // Obtener los tipos disponibles
-    $tipos = mysqli_query(
-        $conex,
-        "SELECT DISTINCT tipo FROM productos ORDER BY tipo ASC"
-    ) or die("Problema al obtener tipos: " . mysqli_error($conex));
-
-mysqli_close($conex);
+    mysqli_close($conex);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -84,80 +45,83 @@ mysqli_close($conex);
         <div style="text-align: center; margin-bottom: 20px;">
             <h2>Panel de Productos - Panadería M</h2>
 
-    <!-- DIV DE FILTROS -->
-    <div>
+<!-- DIV DE FILTROS -->
+            <div>
+                <form method="GET" action="productos_panel.php">
+                    <div class="div-filtros">
 
-        <form method="GET" href="productos_panel.php">
+                        <!-- BUSCAR POR NOMBRE -->
+                        <div>
+                            <label for="nombre">Nombre del producto:</label>
+                            <input
+                                type="text"
+                                name="nombre"
+                                id="nombre"
+                                placeholder="Buscar producto..."
+                                value="<?php echo htmlspecialchars($nombre); ?>"
+                            >
+                        </div>
 
-            <div class="div-filtros">
+                        <!-- FILTRAR POR TIPO -->
+                        <div>
+                            <label for="tipo">Tipo:</label>
+                            <select name="tipo" id="tipo">
+                                <option value="Todos" <?php if($tipo == 'Todos') echo 'selected'; ?>>
+                                    Todos
+                                </option>
+                                <?php while($fila_tipo = mysqli_fetch_assoc($tipos)) { ?>
+                                    <option
+                                        value="<?php echo htmlspecialchars($fila_tipo['tipo']); ?>"
+                                        <?php if($tipo == $fila_tipo['tipo']) echo 'selected'; ?>
+                                    >
+                                        <?php echo htmlspecialchars($fila_tipo['tipo']); ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+                        </div>
 
-                <!-- BUSCAR POR NOMBRE -->
-                <div>
-                    <label for="nombre">Nombre del producto:</label>
-                    <input
-                        type="text"
-                        name="nombre"
-                        id="nombre"
-                        placeholder="Buscar producto..."
-                        value="<?php echo htmlspecialchars($nombre); ?>"
-                    >
-                </div>
+                        <!-- ORDENAR POR PRECIO -->
+                        <div>
+                            <label for="orden">Precio:</label>
+                            <select name="orden" id="orden">
+                                <option value="">Sin ordenar</option>
+                                <option value="mayor" <?php if($orden == 'mayor') echo 'selected'; ?>>
+                                    Mayor
+                                </option>
+                                <option value="menor" <?php if($orden == 'menor') echo 'selected'; ?>>
+                                    Menor
+                                </option>
+                            </select>
+                        </div>
 
-                <!-- FILTRAR POR TIPO -->
-                <div>
-                    <label for="tipo">Tipo:</label>
+                        <!-- FILTRAR ESTADO -->
+                        <div>
+                            <label for="estado">Estado:</label>
+                            <select name="estado" id="estado">
+                                <option value="todos" <?php if($estado == 'todos') echo 'selected'; ?>>
+                                    Todos
+                                </option>
+                                <option value="1" <?php if($estado == '1') echo 'selected'; ?>>
+                                    Activos
+                                </option>
+                                <option value="0" <?php if($estado == '0') echo 'selected'; ?>>
+                                    Inactivos
+                                </option>
+                            </select>
+                        </div>
 
-                    <select name="tipo" id="tipo">
-                        <option value="Todos"
-                            <?php if($tipo == 'Todos') echo 'selected'; ?>>
-                            Todos
-                        </option>
-
-                        <?php while($fila_tipo = mysqli_fetch_assoc($tipos)) { ?>
-                            <option
-                                value="<?php echo htmlspecialchars($fila_tipo['tipo']); ?>"
-                                <?php if($tipo == $fila_tipo['tipo']) echo 'selected'; ?>>
-                                <?php echo htmlspecialchars($fila_tipo['tipo']); ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
-
-                <!-- ORDENAR POR PRECIO -->
-                <div>
-                    <label for="orden">Precio:</label>
-
-                    <select name="orden" id="orden">
-                        <option value="">Sin ordenar</option>
-
-                        <option value="mayor"
-                            <?php if($orden == 'mayor') echo 'selected'; ?>>
-                            Mayor
-                        </option>
-
-                        <option value="menor"
-                            <?php if($orden == 'menor') echo 'selected'; ?>>
-                            Menor
-                        </option>
-                    </select>
-                </div>
-
-                <!-- BOTONES FILTRAR Y LIMPIAR -->
-                <div>
-                    <button type="submit" class="button">
-                        FILTRAR
-                    </button>
-
-                    <a href="productos_panel.php" class="button button-outline">
-                        LIMPIAR
-                    </a>
-                </div>
-
+                        <!-- BOTONES -->
+                        <div style="padding-top: 30px;">
+                            <button type="submit" class="button">
+                                BUSCAR
+                            </button>
+                            <a href="productos_panel.php" class="button button-outline">
+                                LIMPIAR
+                            </a>
+                        </div>
+                    </div>
+                </form>
             </div>
-
-        </form>
-
-    </div>
 
             <div class="div-mayor">
                 <div class="b1">
@@ -177,32 +141,69 @@ mysqli_close($conex);
                     <th>Nombre</th>
                     <th>Tipo</th>
                     <th>Precio Unitario</th>
-                    <th>Baja</th>
-                    <th colspan="2">Acciones</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-            <?php while($row_registros= mysqli_fetch_assoc($registros)) { ?>
-                <tr>   
+            <?php /* while($row_registros= mysqli_fetch_assoc($registros)) { ?>
+                <tr align="center">   
                     <td><?php echo htmlspecialchars($row_registros['id_producto']);?></td> 
                     <td><strong><?php echo htmlspecialchars($row_registros['nombre']);?></strong></td>
                     <td><?php echo htmlspecialchars($row_registros['tipo']);?></td>
                     <td><strong>$<?php echo number_format($row_registros['precio'], 2, ',', '.');?></strong></td> 
-                    <td style="text-align: center"><?php echo ($row_registros['baja']);?></td>
-                    <td align="center">
-                        <form action="productos_modi.php" method="post">
-                            <input type="hidden" name="id_producto" value="<?php echo $row_registros['id_producto'];?>">
-                            <input type="image" name="editar" src="img/lapiz2.png" width="22" title="Editar">
+                    <td> 
+                        <select onchange="actualizarBaja(<?php echo $row_registros['id_producto']; ?>, this.value)" style="margin-bottom:0; padding: 4px 8px; font-size:0.85rem;">
+                            <option value="1" <?php echo ($row_registros['baja'] == 1) ? 'selected' : ''; ?>>Activo</option>
+                            <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>No Activo</option>
+                        </select>
+                    </td> 
+                    <td>
+                        <form action="productos_modi.php" method="post" style="margin:0;">
+                            <input type="hidden" name="id_producto" value="<?php echo $row_registros['id_producto']; ?>">
+                            <button type="submit" class="table-action" title="Editar producto" aria-label="Editar producto">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
                         </form>
                     </td>
-                    <!-- <td align="center">
-                        <form action="productos_baja.php" method="post">
-                            <input type="hidden" name="id_producto" value="<?php echo $row_registros['id_producto'];?>">
-                            <input type="hidden" name="nombre_prod" value="<?php echo htmlspecialchars($row_registros['nombre']);?>">
-                            <input type="image" name="eliminar" src="img/papelera2.png" width="22" title="Eliminar">
-                        </form>
-                    </td> -->
                 </tr>
+            <?php } */ ?>
+            <?php while($row_registros = mysqli_fetch_assoc($registros)) { ?>
+                <?php
+                // COMPROBAR BUSCADOR Y FILTROS
+                if (
+                    ($nombre == '' || stripos($row_registros['nombre'], $nombre) === 0) &&
+                    ($tipo == 'Todos' || $row_registros['tipo'] == $tipo) &&
+                    ($estado == 'todos' || $row_registros['baja'] == $estado)
+                ) {
+                ?>
+                <tr align="center">
+                    <td><?php echo htmlspecialchars($row_registros['id_producto']);?></td>
+                    <td><strong><?php echo htmlspecialchars($row_registros['nombre']);?></strong></td>
+                    <td><?php echo htmlspecialchars($row_registros['tipo']);?></td>
+                    <td><strong>$<?php echo number_format($row_registros['precio'], 2, ',', '.');?></strong></td>
+                    <td>
+                        <select onchange="actualizarBaja(<?php echo $row_registros['id_producto']; ?>, this.value)" style="margin-bottom:0; padding: 4px 8px; font-size:0.85rem;">
+                            <option value="1" <?php echo ($row_registros['baja'] == 1) ? 'selected' : ''; ?>>Activo</option>
+                            <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>No Activo</option>
+                        </select>
+                    </td>
+                    <td>
+                        <form action="productos_modi.php" method="post" style="margin:0;">
+                            <input type="hidden" name="id_producto" value="<?php echo $row_registros['id_producto']; ?>">
+                            <button type="submit" class="table-action" title="Editar producto" aria-label="Editar producto">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <?php } ?>
             <?php } ?>
             </tbody>
         </table>

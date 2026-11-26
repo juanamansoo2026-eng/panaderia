@@ -3,89 +3,28 @@ require_once __DIR__ . '/auth.php';
 ?>
 <?php
     require_once("conexion.php");
-    $registros= mysqli_query($conex,"SELECT id_gasto, turno_id, turno_caja.turno, gastos_administrativos.descripcion, categoria_gasto_id, nombre_categoria, monto, empleado, gastos_administrativos.fecha, gastos_administrativos.baja 
-    FROM gastos_administrativos 
+
+    // CONSULTA INICIAL
+    $registros = mysqli_query($conex, "SELECT id_gasto, turno_id, turno_caja.turno,
+    gastos_administrativos.descripcion, categoria_gasto_id, nombre_categoria,
+    monto, empleado, gastos_administrativos.fecha, gastos_administrativos.baja
+    FROM gastos_administrativos
     INNER JOIN turno_caja ON turno_caja.id_turno = gastos_administrativos.turno_id
-    INNER JOIN categoria_gasto ON categoria_gasto.id_categoria_gasto = gastos_administrativos.categoria_gasto_id")
-    or die ("problema en la consulta".mysqli_error($conex));
+    INNER JOIN categoria_gasto ON categoria_gasto.id_categoria_gasto = gastos_administrativos.categoria_gasto_id
+    ORDER BY gastos_administrativos.baja DESC, gastos_administrativos.fecha DESC")
+    or die("Problema en la consulta " . mysqli_error($conex));
 
     // FILTROS
     $categoria = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';
     $fecha_desde = isset($_GET['fecha_desde']) ? trim($_GET['fecha_desde']) : '';
     $fecha_hasta = isset($_GET['fecha_hasta']) ? trim($_GET['fecha_hasta']) : '';
+    $estado = isset($_GET['estado']) ? $_GET['estado'] : 'todos';
 
-    // CONSULTA INICIAL
-    $sql = "SELECT id_gasto, turno_id, turno_caja.turno,
-                   gastos_administrativos.descripcion,
-                   categoria_gasto_id, nombre_categoria,
-                   monto, empleado, gastos_administrativos.fecha, gastos_administrativos.baja
-            FROM gastos_administrativos
-            INNER JOIN turno_caja
-                ON turno_caja.id_turno = gastos_administrativos.turno_id
-            INNER JOIN categoria_gasto
-                ON categoria_gasto.id_categoria_gasto = gastos_administrativos.categoria_gasto_id
-            WHERE 1=1";
-
-    // FILTRO POR CATEGORIA
-    if ($categoria != '') {
-        $sql .= " AND categoria_gasto_id = ?";
-    }
-
-    // FILTRO POR FECHA DESDE
-    if ($fecha_desde != '') {
-        $sql .= " AND gastos_administrativos.fecha >= ?";
-    }
-
-    // FILTRO POR FECHA HASTA
-    if ($fecha_hasta != '') {
-        $sql .= " AND gastos_administrativos.fecha <= ?";
-    }
-
-    // ORDENAR POR FECHA
-    $sql .= " ORDER BY gastos_administrativos.fecha DESC";
-
-    // PREPARAR CONSULTA SEGURA
-    $consulta = mysqli_prepare($conex, $sql);
-
-    $parametros = [];
-    $tipos_parametros = '';
-
-    // PARAMETRO CATEGORIA
-    if ($categoria != '') {
-        $tipos_parametros .= 'i';
-        $parametros[] = $categoria;
-    }
-
-    // PARAMETRO FECHA DESDE
-    if ($fecha_desde != '') {
-        $tipos_parametros .= 's';
-        $parametros[] = $fecha_desde;
-    }
-
-    // PARAMETRO FECHA HASTA
-    if ($fecha_hasta != '') {
-        $tipos_parametros .= 's';
-        $parametros[] = $fecha_hasta;
-    }
-
-    // VINCULAR PARAMETROS
-    if (!empty($parametros)) {
-        mysqli_stmt_bind_param(
-            $consulta,
-            $tipos_parametros,
-            ...$parametros
-        );
-    }
-
-    // EJECUTAR CONSULTA
-    mysqli_stmt_execute($consulta);
-    $registros = mysqli_stmt_get_result($consulta);
-
-    // CONSULTAR CATEGORIAS
+    // OBTENER CATEGORÍAS
     $categorias = mysqli_query($conex,
         "SELECT id_categoria_gasto, nombre_categoria
-         FROM categoria_gasto
-         ORDER BY nombre_categoria ASC"
+        FROM categoria_gasto
+        ORDER BY nombre_categoria ASC"
     ) or die("Problema en la consulta: " . mysqli_error($conex));
 
     mysqli_close($conex);
@@ -108,15 +47,16 @@ require_once __DIR__ . '/auth.php';
             <!-- DIV DE FILTROS -->
             <div>
                 <form method="GET" action="gastos_administrativos_panel.php">
+
                     <div class="div-filtros">
 
                         <!-- FILTRAR POR CATEGORIA -->
                         <div>
                             <label for="categoria">Categoría:</label>
+
                             <select name="categoria" id="categoria">
 
-                                <option value=""
-                                    <?php if($categoria == '') echo 'selected'; ?>>
+                                <option value="" <?php if($categoria == '') echo 'selected'; ?>>
                                     Todas las categorías
                                 </option>
 
@@ -137,6 +77,7 @@ require_once __DIR__ . '/auth.php';
                         <!-- FECHA DESDE -->
                         <div>
                             <label for="fecha_desde">Fecha desde:</label>
+
                             <input
                                 type="date"
                                 name="fecha_desde"
@@ -148,6 +89,7 @@ require_once __DIR__ . '/auth.php';
                         <!-- FECHA HASTA -->
                         <div>
                             <label for="fecha_hasta">Fecha hasta:</label>
+
                             <input
                                 type="date"
                                 name="fecha_hasta"
@@ -156,15 +98,40 @@ require_once __DIR__ . '/auth.php';
                             >
                         </div>
 
-                        <!-- BOTONES BUSCAR Y LIMPIAR -->
+                        <!-- FILTRAR ESTADO -->
                         <div>
+                            <label for="estado">Estado:</label>
+
+                            <select name="estado" id="estado">
+
+                                <option value="todos" <?php if($estado == 'todos') echo 'selected'; ?>>
+                                    Todos
+                                </option>
+
+                                <option value="1" <?php if($estado == '1') echo 'selected'; ?>>
+                                    Activos
+                                </option>
+
+                                <option value="0" <?php if($estado == '0') echo 'selected'; ?>>
+                                    Inactivos
+                                </option>
+
+                            </select>
+                        </div>
+
+                        <!-- BOTONES -->
+                        <div style="padding-top: 30px;">
+
                             <button type="submit" class="button">
                                 BUSCAR
                             </button>
+
                             <a href="gastos_administrativos_panel.php" class="button button-outline">
                                 LIMPIAR
                             </a>
+
                         </div>
+
                     </div>
                 </form>
             </div>
@@ -191,12 +158,12 @@ require_once __DIR__ . '/auth.php';
                     <th>Turno</th>
                     <th>Empleado</th>
                     <th>Fecha</th>
-                    <th>Acciones</th>
-                    <th>Baja</th>                    
+                    <th>Estado</th>
+                    <th>Acciones</th>                    
                 </tr>
             </thead>
             <tbody>
-            <?php while($row_registros= mysqli_fetch_assoc($registros)) { ?>
+            <?php /* while($row_registros= mysqli_fetch_assoc($registros)) { ?>
                 <tr align="center">   
                     <td><?php echo htmlspecialchars($row_registros['id_gasto']);?></td> 
                     <td><strong><?php echo htmlspecialchars($row_registros['descripcion']);?></strong></td>
@@ -205,19 +172,119 @@ require_once __DIR__ . '/auth.php';
                     <td><?php echo htmlspecialchars($row_registros['turno']);?></td>
                     <td><?php echo htmlspecialchars($row_registros['empleado']);?></td>
                     <td><?php echo htmlspecialchars($row_registros['fecha']);?></td>
-                    <td align="center">
-                        <form action="gastos_administrativos_modi.php" method="post">
-                            <input type="hidden" name="id_gasto" value="<?php echo $row_registros['id_gasto'];?>">
-                            <button type="submit" class="table-action" title="Editar cliente" aria-label="Editar cliente">
-                                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <td> 
+                        <select onchange="actualizarBaja(<?php echo $row_registros['id_gasto']; ?>, this.value)" style="margin-bottom:0; padding: 4px 8px; font-size:0.85rem;">
+                            <option value="1" <?php echo ($row_registros['baja'] == 1) ? 'selected' : ''; ?>>Activo</option>
+                            <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>No Activo</option>
+                        </select>
+                    </td> 
+                    <td>
+                        <form action="gastos_administrativos_modi.php" method="post" style="margin:0;">
+                            <input type="hidden" name="id_gasto" value="<?php echo $row_registros['id_gasto']; ?>">
+                            <button type="submit" class="table-action" title="Editar gasto" aria-label="Editar gasto">
+                                <svg width="22px" height="22px" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
                                     <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                                 </svg>
                             </button>
                         </form>
                     </td>
-                    <td><?php echo htmlspecialchars($row_registros['baja']);?></td>
                 </tr>
+            <?php } */ ?>
+            <?php while($row_registros = mysqli_fetch_assoc($registros)) { ?>
+
+                <?php
+
+                // COMPROBAR LOS FILTROS
+                if (
+                    ($categoria == '' || $row_registros['categoria_gasto_id'] == $categoria) &&
+                    ($fecha_desde == '' || $row_registros['fecha'] >= $fecha_desde) &&
+                    ($fecha_hasta == '' || date('Y-m-d', strtotime($row_registros['fecha'])) <= $fecha_hasta) &&
+                    ($estado == 'todos' || $row_registros['baja'] == $estado)
+                ) {
+                ?>
+
+                <tr align="center">
+
+                    <td>
+                        <?php echo htmlspecialchars($row_registros['id_gasto']); ?>
+                    </td>
+
+                    <td>
+                        <strong>
+                            <?php echo htmlspecialchars($row_registros['descripcion']); ?>
+                        </strong>
+                    </td>
+
+                    <td>
+                        <?php echo htmlspecialchars($row_registros['nombre_categoria']); ?>
+                    </td>
+
+                    <td>
+                        <strong style="color:var(--bakery-danger);">
+                            $<?php echo number_format($row_registros['monto'], 2, ',', '.'); ?>
+                        </strong>
+                    </td>
+
+                    <td>
+                        <?php echo htmlspecialchars($row_registros['turno']); ?>
+                    </td>
+
+                    <td>
+                        <?php echo htmlspecialchars($row_registros['empleado']); ?>
+                    </td>
+
+                    <td>
+                        <?php echo htmlspecialchars($row_registros['fecha']); ?>
+                    </td>
+
+                    <td>
+
+                        <select onchange="actualizarBaja(<?php echo $row_registros['id_gasto']; ?>, this.value)"
+                            style="margin-bottom:0; padding: 4px 8px; font-size:0.85rem;">
+
+                            <option value="1" <?php echo ($row_registros['baja'] == 1) ? 'selected' : ''; ?>>
+                                Activo
+                            </option>
+
+                            <option value="0" <?php echo ($row_registros['baja'] == 0) ? 'selected' : ''; ?>>
+                                No Activo
+                            </option>
+
+                        </select>
+
+                    </td>
+
+                    <td>
+
+                        <form action="gastos_administrativos_modi.php" method="post" style="margin:0;">
+
+                            <input type="hidden" name="id_gasto"
+                                value="<?php echo $row_registros['id_gasto']; ?>">
+
+                            <button type="submit" class="table-action"
+                                title="Editar gasto" aria-label="Editar gasto">
+
+                                <svg width="22px" height="22px" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+
+                                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+
+                                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+
+                                </svg>
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                <?php } ?>
+
             <?php } ?>
             </tbody>
         </table>
